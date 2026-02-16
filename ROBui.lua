@@ -1389,4 +1389,4 @@ end)
       end
       return window
     end
-local library
+return library
