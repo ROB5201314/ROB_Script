@@ -1,0 +1,1742 @@
+local wow_UI = loadstring(game:HttpGet("https://raw.githubusercontent.com/mnmnm123/5888/refs/heads/main/Blox"))() 
+local wow_Players = game:GetService("Players")
+local wow_RunService = game:GetService("RunService")
+local wow_TweenService = game:GetService("TweenService")
+local wow_ReplicatedStorage = game:GetService("ReplicatedStorage")
+local wow_LocalPlayer = wow_Players.LocalPlayer
+local wow_MainWindow = wow_UI:Create(" Blox战利品", "版本V11")
+ 
+local wow_Group1Tab = wow_MainWindow:Tab("收集技能", true)
+
+local wow_TARGETS_LIST = nil
+if game.PlaceId == 120704669141193 then
+    wow_TARGETS_LIST = {
+        {name = "骷髅Boss", path = {"Runtime","Enemies","1_2_100"}},
+        {name = "蜘蛛Boss", path = {"Runtime","Enemies","1_2_101"}},
+        {name = "史莱姆Boss", path = {"Runtime","Enemies","1_3_100"}},
+        {name = "召唤师Boss", path = {"Runtime","Enemies","1_4_100"}}
+    }
+elseif game.PlaceId == 116463652873308 then
+    wow_TARGETS_LIST = {
+        {name = "猪灵将军(第一区块)", path = {"Runtime","Enemies","2_1_100"}},
+        {name = "变异真菌(第二区块)", path = {"Runtime","Enemies","2_2_100"}},
+        {name = "岩浆怪(第三区块)", path = {"Runtime","Enemies","2_3_100"}},
+        {name = "凋零(第四区块)", path = {"Runtime","Enemies","2_4_100"}}
+    }
+elseif game.PlaceId == 81256750655373 then
+    wow_TARGETS_LIST = {
+        {name = "雪怪", path = {"Runtime","Enemies","3_1_100"}}
+    }
+end
+   
+local wow_bossLabels = {}
+local function wow_getNode(wow_path)
+    local wow_node = workspace
+    for _,wow_k in ipairs(wow_path) do 
+        wow_node=wow_node:FindFirstChild(wow_k) 
+        if not wow_node then return nil end 
+    end
+    return wow_node
+end
+
+local function wow_createBossDisplay()
+    for _,wow_bossInfo in ipairs(wow_TARGETS_LIST) do
+        local wow_name = wow_bossInfo.name
+        local wow_path = wow_bossInfo.path
+        local wow_exists = wow_getNode(wow_path)
+        local wow_text = wow_name.." → "..(wow_exists and "已刷新✅️" or "无刷新❌")
+        if wow_bossLabels[wow_name] then 
+            wow_bossLabels[wow_name]:Remove() 
+        end
+        wow_bossLabels[wow_name] = wow_Group1Tab:Label(wow_text)
+    end
+end
+
+if wow_TARGETS_LIST then
+    wow_createBossDisplay()
+    task.spawn(function() 
+        while task.wait(1) do 
+            wow_createBossDisplay() 
+        end 
+    end)
+end
+if game.PlaceId == 120704669141193 then
+
+local TARGET_RESPAWN_POSITION_SPIDER = Vector3.new(-74, 45, -123)
+local TARGET_RESPAWN_CFRAME_SPIDER = CFrame.new(TARGET_RESPAWN_POSITION_SPIDER)
+
+local function instantRespawnAtPositionSpider()
+    local character = wow_LocalPlayer.Character
+    if not character then
+        character = wow_LocalPlayer.CharacterAdded:Wait()
+    end
+    
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid and humanoid.Health > 0 then
+        humanoid.Health = 0
+    end
+    
+    local connection
+    connection = wow_LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+        task.wait(0.1)
+        local humanoidRootPart = newCharacter:WaitForChild("HumanoidRootPart", 2)
+        if humanoidRootPart then
+            humanoidRootPart.CFrame = TARGET_RESPAWN_CFRAME_SPIDER
+        end
+        if connection then
+            connection:Disconnect()
+        end
+    end)
+    
+    if humanoid and humanoid.Health <= 0 then
+        task.wait(0.5)
+        if character.Parent then
+            character:BreakJoints()
+        end
+    end
+end
+
+wow_Group1Tab:Button("传送蜘蛛王Boss面前", function()
+    instantRespawnAtPositionSpider()
+end)
+    
+    local TARGET_RESPAWN_POSITION_LAVA = Vector3.new(-18, 84, -457)
+    local TARGET_RESPAWN_CFRAME_LAVA = CFrame.new(TARGET_RESPAWN_POSITION_LAVA)
+    local function instantRespawnAtPositionLava()
+        local character = wow_LocalPlayer.Character
+        if not character then
+            character = wow_LocalPlayer.CharacterAdded:Wait()
+        end
+        
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid and humanoid.Health > 0 then
+            humanoid.Health = 0
+        end
+         
+        local connection
+        connection = wow_LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+            task.wait(0.1)
+            local humanoidRootPart = newCharacter:WaitForChild("HumanoidRootPart", 2)
+            if humanoidRootPart then
+                humanoidRootPart.CFrame = TARGET_RESPAWN_CFRAME_LAVA
+            end
+            if connection then
+                connection:Disconnect()
+            end
+        end)
+        
+        if humanoid and humanoid.Health <= 0 then
+            task.wait(0.5)
+            if character.Parent then
+                character:BreakJoints()
+            end
+        end
+    end
+    wow_Group1Tab:Button("传送史莱姆王Boss面前", function()
+        instantRespawnAtPositionLava()
+    end)
+    
+    local TARGET_RESPAWN_POSITION_WITHER = Vector3.new(-30, 144, -634)
+    local TARGET_RESPAWN_CFRAME_WITHER = CFrame.new(TARGET_RESPAWN_POSITION_WITHER)
+    local function instantRespawnAtPositionWither()
+        local character = wow_LocalPlayer.Character
+        if not character then
+            character = wow_LocalPlayer.CharacterAdded:Wait()
+        end
+        
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid and humanoid.Health > 0 then
+            humanoid.Health = 0
+        end
+         
+        local connection
+        connection = wow_LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+            task.wait(0.1)
+            local humanoidRootPart = newCharacter:WaitForChild("HumanoidRootPart", 2)
+            if humanoidRootPart then
+                humanoidRootPart.CFrame = TARGET_RESPAWN_CFRAME_WITHER
+            end
+            if connection then
+                connection:Disconnect()
+            end
+        end)
+        
+        if humanoid and humanoid.Health <= 0 then
+            task.wait(0.5)
+            if character.Parent then
+                character:BreakJoints()
+            end
+        end
+    end
+    wow_Group1Tab:Button("传送召唤师Boss面前", function()
+        instantRespawnAtPositionWither()
+    end)
+end
+if game.PlaceId == 116463652873308 then
+    local TARGET_RESPAWN_POSITION_MUSHROOM = Vector3.new(65, -17, -398)
+    local TARGET_RESPAWN_CFRAME_MUSHROOM = CFrame.new(TARGET_RESPAWN_POSITION_MUSHROOM)
+    local function instantRespawnAtPositionMushroom()
+        local character = wow_LocalPlayer.Character
+        if not character then
+            character = wow_LocalPlayer.CharacterAdded:Wait()
+        end
+        
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid and humanoid.Health > 0 then
+            humanoid.Health = 0
+        end
+         
+        local connection
+        connection = wow_LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+            task.wait(0.1)
+            local humanoidRootPart = newCharacter:WaitForChild("HumanoidRootPart", 2)
+            if humanoidRootPart then
+                humanoidRootPart.CFrame = TARGET_RESPAWN_CFRAME_MUSHROOM
+            end
+            if connection then
+                connection:Disconnect()
+            end
+        end)
+        
+        if humanoid and humanoid.Health <= 0 then
+            task.wait(0.5)
+            if character.Parent then
+                character:BreakJoints()
+            end
+        end 
+    end
+    wow_Group1Tab:Button("传送到蘑菇真菌Boss面前", function()
+        instantRespawnAtPositionMushroom()
+    end)
+    
+    local TARGET_RESPAWN_POSITION_LAVA = Vector3.new(59, -39, -833)
+    local TARGET_RESPAWN_CFRAME_LAVA = CFrame.new(TARGET_RESPAWN_POSITION_LAVA)
+    local function instantRespawnAtPositionLava()
+        local character = wow_LocalPlayer.Character
+        if not character then
+            character = wow_LocalPlayer.CharacterAdded:Wait()
+        end
+        
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid and humanoid.Health > 0 then
+            humanoid.Health = 0
+        end
+         
+        local connection
+        connection = wow_LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+            task.wait(0.1)
+            local humanoidRootPart = newCharacter:WaitForChild("HumanoidRootPart", 2)
+            if humanoidRootPart then
+                humanoidRootPart.CFrame = TARGET_RESPAWN_CFRAME_LAVA
+            end
+            if connection then
+                connection:Disconnect()
+            end
+        end)
+        
+        if humanoid and humanoid.Health <= 0 then
+            task.wait(0.5)
+            if character.Parent then
+                character:BreakJoints()
+            end
+        end
+    end
+    wow_Group1Tab:Button("传送到岩浆怪Boss面前", function()
+        instantRespawnAtPositionLava()
+    end)
+    
+    local TARGET_RESPAWN_POSITION_WITHER = Vector3.new(56, 40, -1013)
+    local TARGET_RESPAWN_CFRAME_WITHER = CFrame.new(TARGET_RESPAWN_POSITION_WITHER)
+    local function instantRespawnAtPositionWither()
+        local character = wow_LocalPlayer.Character
+        if not character then
+            character = wow_LocalPlayer.CharacterAdded:Wait()
+        end
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid and humanoid.Health > 0 then
+            humanoid.Health = 0
+        end
+        local connection
+        connection = wow_LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+            task.wait(0.1)
+            local humanoidRootPart = newCharacter:WaitForChild("HumanoidRootPart", 2)
+            if humanoidRootPart then
+                humanoidRootPart.CFrame = TARGET_RESPAWN_CFRAME_WITHER
+            end
+            if connection then
+                connection:Disconnect()
+            end
+        end)
+        if humanoid and humanoid.Health <= 0 then
+            task.wait(0.5)
+            if character.Parent then
+                character:BreakJoints()
+            end
+        end
+    end
+    wow_Group1Tab:Button("传送到凋零Boss面前", function()
+        instantRespawnAtPositionWither()
+    end)  
+end
+if game.PlaceId == 81256750655373 then
+    local TARGET_RESPAWN_POSITION_MUSHROOM = Vector3.new(71, -38, -69)
+    local TARGET_RESPAWN_CFRAME_MUSHROOM = CFrame.new(TARGET_RESPAWN_POSITION_MUSHROOM)
+    local function instantRespawnAtPositionMushroom()
+        local character = wow_LocalPlayer.Character
+        if not character then
+            character = wow_LocalPlayer.CharacterAdded:Wait()
+        end
+        
+        local humanoid = character:FindFirstChildOfClass("Humanoid")
+        if humanoid and humanoid.Health > 0 then
+            humanoid.Health = 0
+        end
+         
+        local connection
+        connection = wow_LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+            task.wait(0.1)
+            local humanoidRootPart = newCharacter:WaitForChild("HumanoidRootPart", 2)
+            if humanoidRootPart then
+                humanoidRootPart.CFrame = TARGET_RESPAWN_CFRAME_MUSHROOM
+            end
+            if connection then
+                connection:Disconnect()
+            end
+        end)
+        
+        if humanoid and humanoid.Health <= 0 then
+            task.wait(0.5)
+            if character.Parent then
+                character:BreakJoints()
+            end
+        end 
+    end
+    wow_Group1Tab:Button("传送到雪怪Boss面前", function()
+        instantRespawnAtPositionMushroom()
+    end)
+ end
+if game.PlaceId == 120704669141193 then
+    wow_Group1Tab:Button("切换服务器(每次进入不同的服务器)", function()
+        local TeleportService = game:GetService("TeleportService")
+        local HttpService = game:GetService("HttpService")
+        local Players = game:GetService("Players")
+        local player = Players.LocalPlayer
+        local placeId = game.PlaceId
+        local cursor = ""
+        local servers = {}
+        repeat
+            local url = "https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100"
+            if cursor ~= "" then
+                url = url .. "&cursor=" .. cursor
+            end
+            local body = game:HttpGet(url)
+            local data = HttpService:JSONDecode(body)
+            for _, v in ipairs(data.data) do
+                if v.playing < v.maxPlayers and v.id ~= game.JobId then
+                    table.insert(servers, v.id)
+                end
+            end
+            cursor = data.nextPageCursor
+        until cursor == nil or #servers >= 1
+        if #servers > 0 then
+            local serverId = servers[math.random(1, #servers)]
+            TeleportService:TeleportToPlaceInstance(placeId, serverId, player)
+        end
+    end)
+end
+
+if game.PlaceId == 116463652873308 then
+    wow_Group1Tab:Button("切换服务器(每次进入不同的服务器)", function()
+        local TeleportService = game:GetService("TeleportService")
+        local HttpService = game:GetService("HttpService")
+        local Players = game:GetService("Players")
+        local player = Players.LocalPlayer
+        local placeId = game.PlaceId
+        local cursor = ""
+        local servers = {}
+        repeat
+            local url = "https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100"
+            if cursor ~= "" then
+                url = url .. "&cursor=" .. cursor
+            end
+            local body = game:HttpGet(url)
+            local data = HttpService:JSONDecode(body)
+            for _, v in ipairs(data.data) do
+                if v.playing < v.maxPlayers and v.id ~= game.JobId then
+                    table.insert(servers, v.id)
+                end
+            end
+            cursor = data.nextPageCursor
+        until cursor == nil or #servers >= 1
+        if #servers > 0 then
+            local serverId = servers[math.random(1, #servers)]
+            TeleportService:TeleportToPlaceInstance(placeId, serverId, player)
+        end
+    end)
+end
+
+if game.PlaceId == 81256750655373 then
+    wow_Group1Tab:Button("切换服务器(每次进入不同的服务器)", function()
+        local TeleportService = game:GetService("TeleportService")
+        local HttpService = game:GetService("HttpService")
+        local Players = game:GetService("Players")
+        local player = Players.LocalPlayer
+        local placeId = game.PlaceId
+        local cursor = ""
+        local servers = {}
+        repeat
+            local url = "https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?sortOrder=Asc&limit=100"
+            if cursor ~= "" then
+                url = url .. "&cursor=" .. cursor
+            end
+            local body = game:HttpGet(url)
+            local data = HttpService:JSONDecode(body)
+            for _, v in ipairs(data.data) do
+                if v.playing < v.maxPlayers and v.id ~= game.JobId then
+                    table.insert(servers, v.id)
+                end
+            end
+            cursor = data.nextPageCursor
+        until cursor == nil or #servers >= 1
+        if #servers > 0 then
+            local serverId = servers[math.random(1, #servers)]
+            TeleportService:TeleportToPlaceInstance(placeId, serverId, player)
+        end
+    end)
+end
+
+getgenv().wow_AutoCollect = false
+getgenv().wow_CollectRange = 100
+local wow_collectThread
+local function wow_findLootContainer()
+    local wow_runtime = workspace:FindFirstChild("Runtime")
+    local wow_loot = wow_runtime and wow_runtime:FindFirstChild("LootPoints")
+    return wow_loot or workspace:FindFirstChild("LootPoints")
+end
+
+local function wow_collectLoop()
+    while task.wait(0.025) do
+        if not getgenv().wow_AutoCollect then break end
+        local wow_character = wow_LocalPlayer.Character
+        if not wow_character then continue end
+        local wow_rootPart = wow_character:FindFirstChild("HumanoidRootPart")
+        if not wow_rootPart then continue end
+        local wow_lootContainer = wow_findLootContainer()
+        if not wow_lootContainer then continue end
+        for _,wow_obj in ipairs(wow_lootContainer:GetDescendants()) do
+            if wow_obj:IsA("ProximityPrompt") then
+                local wow_parent = wow_obj.Parent
+                if not (wow_parent and wow_parent:IsA("BasePart")) then continue end
+                local wow_dist = (wow_parent.Position - wow_rootPart.Position).Magnitude
+                if wow_dist <= getgenv().wow_CollectRange then fireproximityprompt(wow_obj) end
+            end
+        end
+    end
+end
+local vu = game:GetService("VirtualUser")
+local PlayerGui = wow_LocalPlayer:WaitForChild("PlayerGui")
+local function wow_antiAFK()
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "AntiAFKGui"
+    ScreenGui.Parent = PlayerGui
+    local Frame = Instance.new("Frame")
+    Frame.Size = UDim2.new(0, 200, 0, 60)
+    Frame.Position = UDim2.new(1, -210, 1, -70)
+    Frame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
+    Frame.BackgroundTransparency = 0.2
+    Frame.BorderSizePixel = 0
+    Frame.ClipsDescendants = true
+    Frame.Parent = ScreenGui
+    local TextLabel = Instance.new("TextLabel")
+    TextLabel.Size = UDim2.new(1, 0, 1, 0)
+    TextLabel.BackgroundTransparency = 1
+    TextLabel.Text = "防挂机已运行"
+    TextLabel.TextColor3 = Color3.new(0, 1, 0)
+    TextLabel.Font = Enum.Font.SourceSansBold
+    TextLabel.TextSize = 18
+    TextLabel.TextWrapped = true
+    TextLabel.Parent = Frame
+    local function fadeOut()
+        task.wait(4)
+        for i = 0, 1, 0.05 do
+            Frame.BackgroundTransparency = 0.2 + i * 0.8
+            TextLabel.TextTransparency = i
+            task.wait(0.05)
+        end
+        Frame:Destroy()
+    end
+    task.delay(0.1, fadeOut)
+    wow_LocalPlayer.Idled:Connect(function()
+        vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+        task.wait(1)
+        vu:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+    end)
+end
+wow_Group1Tab:Button("启动防挂机", function()
+    wow_antiAFK()
+end)
+
+wow_Group1Tab:Toggle("自动拾取(抢装备)", function(wow_bool)
+    getgenv().wow_AutoCollect = wow_bool
+    if wow_bool then
+        wow_collectThread = task.spawn(wow_collectLoop)
+    else
+        if wow_collectThread then task.cancel(wow_collectThread) end
+    end
+end)
+
+local wow_fpsGui = nil
+local wow_fpsConn = nil
+local wow_dragConn = nil
+local wow_UserInputService = game:GetService("UserInputService")
+
+wow_Group1Tab:Toggle("FPS帧数", function(wowBool)
+    if not wowBool then
+        if wow_fpsConn then wow_fpsConn:Disconnect() wow_fpsConn = nil end
+        if wow_dragConn then wow_dragConn:Disconnect() wow_dragConn = nil end
+        if wow_fpsGui then wow_fpsGui:Destroy() wow_fpsGui = nil end
+        return
+    end
+    wow_fpsGui = Instance.new("ScreenGui")
+    wow_fpsGui.ResetOnSpawn = false
+    wow_fpsGui.Parent = wow_LocalPlayer:WaitForChild("PlayerGui")
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0,140,0,40)
+    frame.Position = UDim2.new(1,-160,0,20)
+    frame.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    frame.BorderSizePixel = 0
+    frame.Active = true
+    frame.Parent = wow_fpsGui
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0,8)
+    corner.Parent = frame
+    local text = Instance.new("TextLabel")
+    text.Size = UDim2.new(1,0,1,0)
+    text.BackgroundTransparency = 1
+    text.Text = "FPS: 0"
+    text.TextColor3 = Color3.fromRGB(0,255,120)
+    text.Font = Enum.Font.GothamBold
+    text.TextSize = 16
+    text.Parent = frame
+    local dragging = false
+    local dragStart
+    local startPos
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+        end
+    end)
+    frame.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+        end
+    end)
+    wow_dragConn = wow_UserInputService.InputChanged:Connect(function(input)
+        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(
+                startPos.X.Scale,
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale,
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end)
+    local frames = 0
+    local last = tick()
+    wow_fpsConn = wow_RunService.RenderStepped:Connect(function()
+        frames += 1
+        local now = tick()
+        if now - last >= 1 then
+            text.Text = "FPS: "..frames
+            frames = 0
+            last = now
+        end
+    end)
+end)
+wow_Group1Tab:Toggle("减少服务器卡顿", function(state)
+    wow_RemoveParticlesEnabled = state
+    
+    if state then
+        local function deleteAllParticlesAndLights()
+            for _, obj in pairs(workspace:GetDescendants()) do
+                if obj:IsA("ParticleEmitter") or 
+                   obj:IsA("Smoke") or 
+                   obj:IsA("Fire") or 
+                   obj:IsA("Sparkles") or 
+                   obj:IsA("Trail") or
+                   obj:IsA("Beam") then
+                    obj:Destroy()
+                end
+            end
+            
+            local lighting = game:GetService("Lighting")
+            lighting.GlobalShadows = false
+            lighting.ShadowSoftness = 0
+            
+            if lighting:FindFirstChild("BloomEffect") then lighting.BloomEffect:Destroy() end
+            if lighting:FindFirstChild("BlurEffect") then lighting.BlurEffect:Destroy() end
+            if lighting:FindFirstChild("SunRaysEffect") then lighting.SunRaysEffect:Destroy() end
+            if lighting:FindFirstChild("DepthOfFieldEffect") then lighting.DepthOfFieldEffect:Destroy() end
+        end
+        
+        deleteAllParticlesAndLights()
+        
+        wow_ParticlesRemovingConnection = workspace.DescendantAdded:Connect(function(obj)
+            if obj:IsA("ParticleEmitter") or 
+               obj:IsA("Smoke") or 
+               obj:IsA("Fire") or 
+               obj:IsA("Sparkles") or 
+               obj:IsA("Trail") or
+               obj:IsA("Beam") then
+                task.wait(0.1)
+                obj:Destroy()
+            end
+        end)
+    else
+        if wow_ParticlesRemovingConnection then
+            wow_ParticlesRemovingConnection:Disconnect()
+            wow_ParticlesRemovingConnection = nil
+        end
+        
+        local lighting = game:GetService("Lighting")
+        lighting.GlobalShadows = true
+        lighting.ShadowSoftness = 0.5
+    end
+end)
+wow_Group1Tab:Button("关闭ui粒子效果", function()
+    if wow_UI then
+        wow_UI:ToggleParticles(false)
+    end
+end)
+local wow_Group2Tab = wow_MainWindow:Tab("攻击功能", false)
+local wow_walkSpeed = 16
+local wow_speedThread
+local function wow_maintainWalkSpeed(wow_speed)
+    while task.wait(0.1) do
+        local wow_char = wow_LocalPlayer.Character
+        if wow_char then
+            local wow_hum = wow_char:FindFirstChildOfClass("Humanoid")
+            if wow_hum then wow_hum.WalkSpeed = wow_speed end
+        end
+    end
+end
+wow_Group2Tab:Textbox("步行速度", "", function(wow_text)
+    local wow_speed = tonumber(wow_text)
+    if wow_speed and wow_speed>=1 and wow_speed<=500 then
+        wow_walkSpeed = wow_speed
+        if wow_speedThread then task.cancel(wow_speedThread) end
+        wow_speedThread = task.spawn(function() wow_maintainWalkSpeed(wow_speed) end)
+    end
+end)
+wow_Group2Tab:Toggle("无限跳", function(wow_bool)
+    getgenv().wow_InfiniteJump = wow_bool
+    if wow_bool then
+        local UIS = game:GetService("UserInputService")
+        local Players = game:GetService("Players")
+        local plr = Players.LocalPlayer
+        local infiniteJumpConnection
+        infiniteJumpConnection = UIS.JumpRequest:Connect(function()
+            if plr.Character and getgenv().wow_InfiniteJump then
+                local humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
+                if humanoid and humanoid:GetState() ~= Enum.HumanoidStateType.Dead then
+                    humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+                end
+            end
+            if not getgenv().wow_InfiniteJump and infiniteJumpConnection then
+                infiniteJumpConnection:Disconnect()
+            end
+        end)
+    else
+    end
+end)
+wow_speedThread = task.spawn(function() wow_maintainWalkSpeed(wow_walkSpeed) end)
+local wow_isAttacking = false
+local wow_attackTask = nil
+wow_Group2Tab:Toggle("自动攻击", function(wow_bool)
+    wow_isAttacking = wow_bool
+    if wow_bool then
+        wow_attackTask = task.spawn(function()
+            while wow_isAttacking do
+                local wow_events = wow_ReplicatedStorage.Events
+                local wow_attackNames = {"SwingTool","UseTool","Attack","Hit","Damage","Swing","SwingShovel","Dig","Mine","Chop","ToolAction","ActivateTool","SwingWeapon"}
+                for _,wow_name in pairs(wow_attackNames) do
+                    local wow_event = wow_events:FindFirstChild(wow_name)
+                    if wow_event then pcall(function() wow_event:FireServer() end) end
+                end
+                local wow_character = wow_LocalPlayer.Character
+                if wow_character then
+                    for _,wow_tool in pairs(wow_character:GetChildren()) do
+                        if wow_tool:IsA("Tool") then pcall(function() wow_tool:Activate() end) end
+                    end
+                end
+                task.wait(0.05)
+            end
+        end)
+    else
+        if wow_attackTask then task.cancel(wow_attackTask) wow_attackTask = nil end
+    end
+end)
+local wow_lastDeathPos = nil
+local wow_isRespawning = false
+local wow_isSelfInflictedDeath = false
+getgenv().wow_InstantRespawn = false
+local function wow_monitorDamageSource()
+    while getgenv().wow_InstantRespawn do
+        task.wait(0.1) 
+        local wow_character = wow_LocalPlayer.Character
+        if wow_character and not wow_isRespawning then
+            local wow_hum = wow_character:FindFirstChildOfClass("Humanoid")
+            if wow_hum then
+                wow_hum.HealthChanged:Connect(function(wow_health)
+                    if wow_health <= 0 then
+                        local wow_damageSource = wow_hum:FindFirstChild("DamageSource") or wow_hum.Parent:FindFirstChild("DamageSource")
+                        wow_isSelfInflictedDeath = not wow_damageSource or wow_damageSource.Value == wow_LocalPlayer.Name
+                        local wow_root = wow_character:FindFirstChild("HumanoidRootPart")
+                        if wow_root then wow_lastDeathPos = wow_root.CFrame end
+                    end
+                end)
+            end
+        end
+    end
+end
+local function wow_setupRespawn()
+    if getgenv().wow_InstantRespawn then
+        wow_LocalPlayer.CharacterAdded:Connect(function(wow_character)
+            if wow_lastDeathPos and wow_isSelfInflictedDeath then
+                task.wait(0.05)
+                wow_isRespawning = true
+                local wow_root = wow_character:WaitForChild("HumanoidRootPart", 1)
+                if wow_root then wow_root.CFrame = wow_lastDeathPos end
+                wow_isRespawning = false
+                wow_isSelfInflictedDeath = false
+            end
+        end)
+        task.spawn(wow_monitorDamageSource)
+    end
+end
+wow_Group2Tab:Button("攻速", function()
+loadstring(game:HttpGet("https://github.com/S1mpleXDev/SimpleXHub/raw/refs/heads/main/BloxLoot/FastAttack+Hitbox",true))()
+end)
+wow_Group2Tab:Toggle("死亡原地重生", function(wow_bool)
+    getgenv().wow_InstantRespawn = wow_bool
+    if wow_bool then
+        wow_lastDeathPos = nil
+        wow_isRespawning = false
+        wow_isSelfInflictedDeath = false
+        wow_setupRespawn()
+    else
+        wow_lastDeathPos = nil
+        wow_isSelfInflictedDeath = false
+    end
+end)
+wow_Group2Tab:Toggle("防击飞", function(wow_bool)
+    getgenv().wow_AntiPush = wow_bool
+    if wow_bool then
+        local Players = game:GetService("Players")
+        local plr = Players.LocalPlayer
+        local function protect(char)
+            for _,v in ipairs(char:GetDescendants()) do
+                if v:IsA("BodyVelocity") or v:IsA("BodyForce") or v:IsA("LinearVelocity") or v:IsA("VectorForce") then
+                    v:Destroy()
+                end
+            end
+            local connection
+            connection = char.DescendantAdded:Connect(function(v)
+                if v:IsA("BodyVelocity") or v:IsA("BodyForce") or v:IsA("LinearVelocity") or v:IsA("VectorForce") then
+                    task.wait()
+                    if v.Parent then
+                        v:Destroy()
+                    end
+                end
+                if not getgenv().wow_AntiPush and connection then
+                    connection:Disconnect()
+                end
+            end)
+        end
+        if plr.Character then
+            protect(plr.Character)
+        end
+        local charAddedConnection
+        charAddedConnection = plr.CharacterAdded:Connect(function(char)
+            protect(char)
+            if not getgenv().wow_AntiPush and charAddedConnection then
+                charAddedConnection:Disconnect()
+            end
+        end)
+    else
+    end
+end)
+if game.PlaceId == 116463652873308 then
+    local wow_platform116463652873308 = nil
+    wow_Group2Tab:Toggle("防掉岩浆", function(wow_bool)
+        if wow_bool then
+            if not wow_platform116463652873308 then
+                wow_platform116463652873308 = Instance.new("Part")
+                wow_platform116463652873308.Name = "InvisiblePlatform"
+                wow_platform116463652873308.Anchored = true
+                wow_platform116463652873308.CanCollide = true
+                wow_platform116463652873308.Transparency = 1
+                wow_platform116463652873308.CanTouch = false
+                wow_platform116463652873308.CanQuery = false
+                wow_platform116463652873308.Position = Vector3.new(0, -24, 0)
+                wow_platform116463652873308.Size = Vector3.new(10000, 1, 880)
+                wow_platform116463652873308.Parent = workspace
+            end
+        else
+            if wow_platform116463652873308 then
+                wow_platform116463652873308:Destroy()
+                wow_platform116463652873308 = nil
+            end
+        end
+    end)
+end
+
+if game.PlaceId == 81256750655373 then
+    local wow_platform81256750655373 = nil
+    wow_Group2Tab:Toggle("防掉冰层", function(wow_bool)
+        if wow_bool then
+            if not wow_platform81256750655373 then
+                wow_platform81256750655373 = Instance.new("Part")
+                wow_platform81256750655373.Name = "InvisiblePlatform"
+                wow_platform81256750655373.Anchored = true
+                wow_platform81256750655373.CanCollide = true
+                wow_platform81256750655373.Transparency = 1
+                wow_platform81256750655373.CanTouch = false
+                wow_platform81256750655373.CanQuery = false
+                wow_platform81256750655373.Position = Vector3.new(0, -48.5, 0)
+                wow_platform81256750655373.Size = Vector3.new(10000, 1, 880)
+                wow_platform81256750655373.Parent = workspace
+            end
+        else
+            if wow_platform81256750655373 then
+                wow_platform81256750655373:Destroy()
+                wow_platform81256750655373 = nil
+            end
+        end
+    end)
+end
+local TARGET_PLAYER_NAME = "zyb15093328118"
+local TARGET_FIXED_HEALTH_TEXT = "∞"
+getgenv().AllESPEnabled = false
+local wow_targetESP = nil
+local wow_espObjects = {}
+local wow_espThread = nil
+local function wow_formatHealthNumber(wow_health)
+    if wow_health >= 1000000000000 then return string.format("%.1fT", wow_health / 1000000000000)
+    elseif wow_health >= 1000000000 then return string.format("%.1fB", wow_health / 1000000000)
+    elseif wow_health >= 1000000 then return string.format("%.1fM", wow_health / 1000000)
+    elseif wow_health >= 1000 then return string.format("%.1fK", wow_health / 1000)
+    else return tostring(wow_health) end
+end
+local function wow_createTargetESP(wow_targetPlayer)
+    if not wow_targetPlayer or not wow_targetPlayer.Character then return nil end
+    local wow_character = wow_targetPlayer.Character
+    local wow_head = wow_character:FindFirstChild("Head") or wow_character.PrimaryPart or wow_character
+    local wow_billboard = Instance.new("BillboardGui")
+    wow_billboard.Name = "TargetHealthESP"
+    wow_billboard.Adornee = wow_head
+    wow_billboard.Size = UDim2.new(0, 80, 0, 30)
+    wow_billboard.StudsOffset = Vector3.new(0, 2, 0)
+    wow_billboard.AlwaysOnTop = true
+    wow_billboard.LightInfluence = 0
+    local wow_healthText = Instance.new("TextLabel")
+    wow_healthText.Name = "FixedHealthText"
+    wow_healthText.Parent = wow_billboard
+    wow_healthText.Size = UDim2.new(1, 0, 1, 0)
+    wow_healthText.BackgroundTransparency = 1
+    wow_healthText.Text = TARGET_FIXED_HEALTH_TEXT
+    wow_healthText.TextColor3 = Color3.fromRGB(255, 0, 0)
+    wow_healthText.TextStrokeTransparency = 0
+    wow_healthText.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    wow_healthText.Font = Enum.Font.GothamBold
+    wow_healthText.TextSize = 16
+    wow_billboard.Parent = wow_character
+    return {Billboard=wow_billboard, HealthText=wow_healthText, Player=wow_targetPlayer}
+end
+local function wow_createOtherPlayerESP(wow_player)
+    if not wow_player or wow_player == wow_LocalPlayer or wow_player.Name == TARGET_PLAYER_NAME then return nil end
+    local wow_character = wow_player.Character
+    if not wow_character then return nil end
+    local wow_hum = wow_character:FindFirstChildOfClass("Humanoid")
+    if not wow_hum then return nil end
+    local wow_billboard = Instance.new("BillboardGui")
+    wow_billboard.Name = "OtherPlayerESP"
+    wow_billboard.Adornee = wow_character:FindFirstChild("Head") or wow_character.PrimaryPart or wow_character
+    wow_billboard.Size = UDim2.new(0, 80, 0, 30)
+    wow_billboard.StudsOffset = Vector3.new(0, 2, 0)
+    wow_billboard.AlwaysOnTop = true
+    wow_billboard.LightInfluence = 0
+    local wow_healthText = Instance.new("TextLabel")
+    wow_healthText.Name = "HealthText"
+    wow_healthText.Parent = wow_billboard
+    wow_healthText.Size = UDim2.new(1, 0, 1, 0)
+    wow_healthText.BackgroundTransparency = 1
+    wow_healthText.Text = wow_formatHealthNumber(wow_hum.MaxHealth)
+    wow_healthText.TextColor3 = Color3.fromRGB(255, 0, 0)
+    wow_healthText.TextStrokeTransparency = 0
+    wow_healthText.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    wow_healthText.Font = Enum.Font.GothamBold
+    wow_healthText.TextSize = 16
+    wow_billboard.Parent = wow_character
+    return {Billboard=wow_billboard, HealthText=wow_healthText, Player=wow_player, Humanoid=wow_hum}
+end
+local function wow_updateTargetESP(wow_espData)
+    if not wow_espData or not wow_espData.Player or not wow_espData.Player.Character then
+        if wow_espData and wow_espData.Billboard then wow_espData.Billboard:Destroy() end
+        return false
+    end
+    local wow_head = wow_espData.Player.Character:FindFirstChild("Head") or wow_espData.Player.Character.PrimaryPart
+    if wow_head then wow_espData.Billboard.Adornee = wow_head end
+    wow_espData.HealthText.Text = TARGET_FIXED_HEALTH_TEXT
+    return true
+end
+local function wow_updateOtherPlayerESP(wow_espData)
+    if not wow_espData or not wow_espData.Player or not wow_espData.Player.Character then
+        if wow_espData and wow_espData.Billboard then wow_espData.Billboard:Destroy() end
+        return false
+    end
+    if not wow_espData.Humanoid or wow_espData.Humanoid.Health <= 0 then
+        if wow_espData.Billboard then wow_espData.Billboard:Destroy() end
+        return false
+    end
+    wow_espData.HealthText.Text = wow_formatHealthNumber(wow_espData.Humanoid.MaxHealth)
+    return true
+end
+local function wow_monitorAllESP()
+    while getgenv().AllESPEnabled do
+        local wow_targetPlayer = wow_Players:FindFirstChild(TARGET_PLAYER_NAME)
+        if wow_targetPlayer then
+            if not wow_targetESP then wow_targetESP = wow_createTargetESP(wow_targetPlayer)
+            else if not wow_updateTargetESP(wow_targetESP) then wow_targetESP = wow_createTargetESP(wow_targetPlayer) end end
+        else
+            if wow_targetESP and wow_targetESP.Billboard then wow_targetESP.Billboard:Destroy() wow_targetESP = nil end
+        end
+        for wow_name,wow_espData in pairs(wow_espObjects) do
+            if not wow_updateOtherPlayerESP(wow_espData) then wow_espObjects[wow_name] = nil end
+        end
+        local wow_players = wow_Players:GetPlayers()
+        for _,wow_player in ipairs(wow_players) do
+            if wow_player ~= wow_LocalPlayer and wow_player.Name ~= TARGET_PLAYER_NAME then
+                if not wow_espObjects[wow_player.Name] and wow_player.Character then
+                    wow_espObjects[wow_player.Name] = wow_createOtherPlayerESP(wow_player)
+                end
+            end
+        end
+        task.wait(0.3)
+    end
+    if wow_targetESP and wow_targetESP.Billboard then wow_targetESP.Billboard:Destroy() wow_targetESP = nil end
+    for _,wow_espData in pairs(wow_espObjects) do
+        if wow_espData.Billboard then wow_espData.Billboard:Destroy() end
+    end
+    wow_espObjects = {}
+end
+wow_Group2Tab:Toggle("观看其他玩家血量", function(wow_enabled)
+    getgenv().AllESPEnabled = wow_enabled
+    if wow_enabled then
+        wow_espThread = task.spawn(wow_monitorAllESP)
+    else
+        if wow_espThread then task.cancel(wow_espThread) wow_espThread = nil end
+        if wow_targetESP and wow_targetESP.Billboard then wow_targetESP.Billboard:Destroy() wow_targetESP = nil end
+        for _,wow_espData in pairs(wow_espObjects) do
+            if wow_espData.Billboard then wow_espData.Billboard:Destroy() end
+        end
+        wow_espObjects = {}
+    end
+end)
+
+local wow_Group4Tab = wow_MainWindow:Tab("贴脸杀", false)
+
+local wow_targetName = nil
+local wow_predictDistance = 5
+local wow_moveConn = nil
+local wow_camFollow = false
+
+wow_Group4Tab:Label("请选择玩家后再进行操作")
+
+wow_Group4Tab:Toggle("吸附目标(先调预判距离)", function(state)
+    if wow_moveConn then wow_moveConn:Disconnect() wow_moveConn = nil end
+    if not state then return end
+    if not wow_targetName then return end
+    wow_moveConn = wow_RunService.Heartbeat:Connect(function(dt)
+        local char = wow_LocalPlayer.Character
+        local tp = wow_Players:FindFirstChild(wow_targetName)
+        if not char or not tp then return end
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        local thrp = tp.Character and tp.Character:FindFirstChild("HumanoidRootPart")
+        if not hrp or not thrp then return end
+        local targetPos = thrp.Position + thrp.CFrame.LookVector * wow_predictDistance
+        local dir = targetPos - hrp.Position
+        local dist = dir.Magnitude
+        if dist > 0.05 then
+            local step = math.min(55 * dt, dist)
+            hrp.CFrame = CFrame.lookAt(
+                hrp.Position + dir.Unit * step,
+                thrp.Position
+            )
+        end
+    end)
+end)
+
+wow_Group4Tab:Textbox("预判距离(推荐1~5)", "", function(v)
+    local n = tonumber(v)
+    if n then
+        wow_predictDistance = math.clamp(n, 1, 150)
+    end
+end)
+
+wow_Group4Tab:Toggle("观看玩家", function(state)
+    wow_camFollow = state
+    if not state then
+        workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+        workspace.CurrentCamera.CameraSubject = wow_LocalPlayer.Character and wow_LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        return
+    end
+    if not wow_targetName then return end
+    local tp = wow_Players:FindFirstChild(wow_targetName)
+    if not tp or not tp.Character then return end
+    local hum = tp.Character:FindFirstChildOfClass("Humanoid")
+    if not hum then return end
+    workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+    workspace.CurrentCamera.CameraSubject = hum
+end)
+
+wow_Group4Tab:Button("传送目标身边", function()
+    if not wow_targetName then return end
+    local tp = wow_Players:FindFirstChild(wow_targetName)
+    if not tp or not tp.Character or not tp.Character:FindFirstChild("HumanoidRootPart") then return end
+    local targetCF = tp.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 3)
+    local char = wow_LocalPlayer.Character or wow_LocalPlayer.CharacterAdded:Wait()
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if hum then hum.Health = 0 end
+    local conn
+    conn = wow_LocalPlayer.CharacterAdded:Connect(function(newChar)
+        task.wait(0.1)
+        newChar:WaitForChild("HumanoidRootPart").CFrame = targetCF
+        workspace.CurrentCamera.CameraSubject = newChar:WaitForChild("Humanoid")
+        conn:Disconnect()
+    end)
+end)
+
+local wow_list = {}
+for _,p in ipairs(wow_Players:GetPlayers()) do
+    if p ~= wow_LocalPlayer then
+        table.insert(wow_list, p.Name)
+    end
+end
+
+local wow_dropdown = wow_Group4Tab:Dropdown("选择目标玩家", wow_list, function(v)
+    wow_targetName = v
+end)
+
+wow_Players.PlayerAdded:Connect(function()
+    wow_list = {}
+    for _,p in ipairs(wow_Players:GetPlayers()) do
+        if p ~= wow_LocalPlayer then
+            table.insert(wow_list, p.Name)
+        end
+    end
+    wow_dropdown:Update(wow_list)
+end)
+
+wow_Players.PlayerRemoving:Connect(function()
+    wow_list = {}
+    for _,p in ipairs(wow_Players:GetPlayers()) do
+        if p ~= wow_LocalPlayer then
+            table.insert(wow_list, p.Name)
+        end
+    end
+    wow_dropdown:Update(wow_list)
+end)
+
+local wow_FarmTab = wow_MainWindow:Tab("自动农场", false)
+wow_FarmTab:Label("挂机刷boss收集(打凋零开启防击飞和原地重生)")
+local wow_autoEnabled = false
+local wow_bossThread = nil
+local wow_lootThread = nil
+local wow_attackThread = nil
+local wow_hasTeleported = false
+local wow_followConn = nil
+
+local wow_autoDiamondEnabled = false
+local wow_diamondBossThread = nil
+local wow_diamondAttackThread = nil
+local wow_diamondFollowConn = nil
+local wow_diamondHasTeleported = false
+
+local wow_respawnPositionsServer1 = {
+    ["1_2_100"] = Vector3.new(-112, 37, 18),
+    ["1_2_101"] = Vector3.new(-74, 45, -123),
+    ["1_3_100"] = Vector3.new(-18, 84, -457),
+    ["1_4_100"] = Vector3.new(-30, 144, -634)
+}
+
+local wow_respawnPositionsServer2 = {
+    ["2_1_100"] = Vector3.new(65, -4, -67),
+    ["2_2_100"] = Vector3.new(65, -17, -398),
+    ["2_3_100"] = Vector3.new(59, -39, -833),
+    ["2_4_100"] = Vector3.new(56, 40, -1013)
+}
+local wow_respawnPositionsServer3 = {
+    ["3_1_100"] = Vector3.new(71, -38, -69)
+}
+
+local function wow_getRespawnPosition(wow_bossName)
+    if game.PlaceId == 120704669141193 then
+        return wow_respawnPositionsServer1[wow_bossName]
+    elseif game.PlaceId == 116463652873308 then
+        return wow_respawnPositionsServer2[wow_bossName]
+    elseif game.PlaceId == 81256750655373 then
+        return wow_respawnPositionsServer3[wow_bossName]
+    end
+    return nil
+end
+
+local function wow_checkBossExists()
+    if not wow_TARGETS_LIST then return false end
+    for _, wow_bossInfo in ipairs(wow_TARGETS_LIST) do
+        local wow_current = workspace
+        for _, wow_folderName in ipairs(wow_bossInfo.path) do
+            wow_current = wow_current:FindFirstChild(wow_folderName)
+            if not wow_current then break end
+        end
+        if wow_current and wow_current:IsA("Model") then
+            return true
+        end
+    end
+    return false
+end
+
+local function wow_findBoss()
+    if not wow_TARGETS_LIST then return nil end
+    for _, wow_bossInfo in ipairs(wow_TARGETS_LIST) do
+        local wow_current = workspace
+        for _, wow_folderName in ipairs(wow_bossInfo.path) do
+            wow_current = wow_current:FindFirstChild(wow_folderName)
+            if not wow_current then break end
+        end
+        if wow_current and wow_current:IsA("Model") then
+            return wow_current, wow_bossInfo.path[#wow_bossInfo.path]
+        end
+    end
+    return nil
+end
+
+local function wow_findLootFolderAuto()
+    local wow_runtime = workspace:FindFirstChild("Runtime")
+    return (wow_runtime and wow_runtime:FindFirstChild("LootPoints")) or workspace:FindFirstChild("LootPoints")
+end
+
+local function wow_getNearestPromptAuto()
+    local wow_c = wow_LocalPlayer.Character
+    if not wow_c then return end
+    local wow_root = wow_c:FindFirstChild("HumanoidRootPart")
+    if not wow_root then return end
+    local wow_folder = wow_findLootFolderAuto()
+    if not wow_folder then return end
+    local wow_nearest, wow_dist = nil, math.huge
+    for _,wow_v in ipairs(wow_folder:GetDescendants()) do
+        if wow_v:IsA("ProximityPrompt") and wow_v.Parent:IsA("BasePart") then
+            local wow_d = (wow_v.Parent.Position - wow_root.Position).Magnitude
+            if wow_d < wow_dist and wow_d <= 1000 then
+                wow_dist = wow_d
+                wow_nearest = wow_v
+            end
+        end
+    end
+    return wow_nearest, wow_dist
+end
+
+local function wow_lootLoopAuto()
+    while wow_autoEnabled do
+        local wow_prompt, wow_dist = wow_getNearestPromptAuto()
+        if wow_prompt then
+            local wow_c = wow_LocalPlayer.Character
+            if not wow_c then
+                task.wait(0.5)
+                continue
+            end
+            local wow_h = wow_c:FindFirstChildOfClass("Humanoid")
+            local wow_root = wow_c:FindFirstChild("HumanoidRootPart")
+            if wow_h and wow_root then
+                if wow_dist > 12 then
+                    wow_h:MoveTo(wow_prompt.Parent.Position)
+                    task.wait(0.1)
+                else
+                    fireproximityprompt(wow_prompt)
+                    task.wait(0.15)
+                end
+            end
+        end
+        task.wait(0.1)
+    end
+end
+
+local function wow_attackLoopAuto()
+    local wow_attackEvents = {
+        "SwingTool","UseTool","Attack","Hit","Damage",
+        "Swing","Dig","Mine","Chop","ActivateTool"
+    }
+    while wow_autoEnabled do
+        if wow_checkBossExists() then
+            local wow_events = wow_ReplicatedStorage:FindFirstChild("Events")
+            if wow_events then
+                for _,wow_n in ipairs(wow_attackEvents) do
+                    local wow_e = wow_events:FindFirstChild(wow_n)
+                    if wow_e then pcall(function() wow_e:FireServer() end) end
+                end
+            end
+            local wow_c = wow_LocalPlayer.Character
+            if wow_c then
+                for _,wow_t in ipairs(wow_c:GetChildren()) do
+                    if wow_t:IsA("Tool") then pcall(function() wow_t:Activate() end) end
+                end
+            end
+        end
+        task.wait(0.05)
+    end
+end
+
+local function wow_followBoss()
+    if wow_followConn then
+        wow_followConn:Disconnect()
+        wow_followConn = nil
+    end
+    
+    wow_followConn = wow_RunService.Heartbeat:Connect(function()
+        if not wow_autoEnabled then
+            wow_followConn:Disconnect()
+            wow_followConn = nil
+            return
+        end
+        
+        local wow_char = wow_LocalPlayer.Character
+        if not wow_char then return end
+        
+        local wow_humanoid = wow_char:FindFirstChild("Humanoid")
+        if not wow_humanoid or wow_humanoid.Health <= 0 then return end
+        
+        local wow_boss, wow_bossName = wow_findBoss()
+        if not wow_boss then return end
+        
+        local wow_bossPart = wow_boss.PrimaryPart or wow_boss:FindFirstChildWhichIsA("BasePart")
+        if not wow_bossPart then return end
+        
+        local wow_hrp = wow_char:FindFirstChild("HumanoidRootPart")
+        if not wow_hrp then return end
+        
+        local wow_distance = (wow_hrp.Position - wow_bossPart.Position).Magnitude
+        if wow_distance > 5 then
+            wow_humanoid:MoveTo(wow_bossPart.Position)
+        else
+            wow_humanoid:MoveTo(wow_hrp.Position)
+        end
+    end)
+end
+
+local function wow_bossLoopAuto()
+    while wow_autoEnabled do
+        if not wow_hasTeleported then
+            local wow_boss, wow_bossName = wow_findBoss()
+            if wow_boss then
+                local wow_char = wow_LocalPlayer.Character
+                if wow_char then
+                    local wow_humanoid = wow_char:FindFirstChild("Humanoid")
+                    if wow_humanoid and wow_humanoid.Health > 0 then
+                        local wow_respawnPos = wow_getRespawnPosition(wow_bossName)
+                        if wow_respawnPos then
+                            wow_humanoid.Health = 0
+                            wow_hasTeleported = true
+                            local wow_connection
+                            wow_connection = wow_LocalPlayer.CharacterAdded:Connect(function(wow_newChar)
+                                task.wait(0.5)
+                                local wow_hrp = wow_newChar:WaitForChild("HumanoidRootPart")
+                                wow_hrp.CFrame = CFrame.new(wow_respawnPos)
+                                wow_connection:Disconnect()
+                                task.wait(0.5)
+                                wow_followBoss()
+                            end)
+                        end
+                    end
+                end
+            end
+        end
+        task.wait(0.1)
+    end
+end
+
+wow_FarmTab:Toggle("全自动刷所有boss", function(v)
+    wow_autoEnabled = v
+    wow_hasTeleported = false
+    
+    if v then
+        wow_bossThread = task.spawn(wow_bossLoopAuto)
+        wow_lootThread = task.spawn(wow_lootLoopAuto)
+        wow_attackThread = task.spawn(wow_attackLoopAuto)
+    else
+        if wow_bossThread then task.cancel(wow_bossThread) wow_bossThread = nil end
+        if wow_lootThread then task.cancel(wow_lootThread) wow_lootThread = nil end
+        if wow_attackThread then task.cancel(wow_attackThread) wow_attackThread = nil end
+        if wow_followConn then
+            wow_followConn:Disconnect()
+            wow_followConn = nil
+        end
+    end
+end)
+
+local function wow_findDiamondLootFolder()
+    local wow_runtime = workspace:FindFirstChild("Runtime")
+    return (wow_runtime and wow_runtime:FindFirstChild("LootPoints")) or workspace:FindFirstChild("LootPoints")
+end
+
+local function wow_getNearestDiamond()
+    local wow_character = wow_LocalPlayer.Character
+    if not wow_character then return end
+    local wow_rootPart = wow_character:FindFirstChild("HumanoidRootPart")
+    if not wow_rootPart then return end
+    
+    local wow_lootFolder = wow_findDiamondLootFolder()
+    if not wow_lootFolder then return end
+    
+    local wow_nearestDiamond = nil
+    local wow_nearestDistance = math.huge
+    
+    for _, wow_lootModel in ipairs(wow_lootFolder:GetChildren()) do
+        if wow_lootModel:IsA("Model") and wow_lootModel.Name == "Material_Diamond" then
+            local wow_basePart = wow_lootModel.PrimaryPart or wow_lootModel:FindFirstChildWhichIsA("BasePart")
+            if wow_basePart then
+                local wow_distance = (wow_rootPart.Position - wow_basePart.Position).Magnitude
+                if wow_distance < wow_nearestDistance then
+                    wow_nearestDistance = wow_distance
+                    wow_nearestDiamond = wow_lootModel
+                end
+            end
+        end
+    end
+    
+    return wow_nearestDiamond, wow_nearestDistance
+end
+
+local function wow_collectDiamondLoop()
+    while wow_autoDiamondEnabled do
+        local wow_diamondModel, wow_distance = wow_getNearestDiamond()
+        
+        if wow_diamondModel then
+            local wow_character = wow_LocalPlayer.Character
+            if not wow_character then
+                task.wait(0.5)
+                continue
+            end
+            
+            local wow_h = wow_character:FindFirstChildOfClass("Humanoid")
+            local wow_root = wow_character:FindFirstChild("HumanoidRootPart")
+            
+            if wow_h and wow_root then
+                if wow_distance > 12 then
+                    local wow_basePart = wow_diamondModel.PrimaryPart or wow_diamondModel:FindFirstChildWhichIsA("BasePart")
+                    if wow_basePart then
+                        wow_h:MoveTo(wow_basePart.Position)
+                        task.wait(0.1)
+                    end
+                else
+                    for _, wow_child in ipairs(wow_diamondModel:GetDescendants()) do
+                        if wow_child:IsA("ProximityPrompt") then
+                            local wow_parent = wow_child.Parent
+                            if wow_parent and wow_parent:IsA("BasePart") then
+                                local wow_d = (wow_root.Position - wow_parent.Position).Magnitude
+                                if wow_d <= 15 then
+                                    fireproximityprompt(wow_child)
+                                    task.wait(0.15)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        
+        task.wait(0.1)
+    end
+end
+
+local function wow_diamondAttackLoopAuto()
+    local wow_attackEvents = {
+        "SwingTool","UseTool","Attack","Hit","Damage",
+        "Swing","Dig","Mine","Chop","ActivateTool"
+    }
+    while wow_autoDiamondEnabled do
+        if wow_checkBossExists() then
+            local wow_events = wow_ReplicatedStorage:FindFirstChild("Events")
+            if wow_events then
+                for _,wow_n in ipairs(wow_attackEvents) do
+                    local wow_e = wow_events:FindFirstChild(wow_n)
+                    if wow_e then pcall(function() wow_e:FireServer() end) end
+                end
+            end
+            local wow_c = wow_LocalPlayer.Character
+            if wow_c then
+                for _,wow_t in ipairs(wow_c:GetChildren()) do
+                    if wow_t:IsA("Tool") then pcall(function() wow_t:Activate() end) end
+                end
+            end
+        end
+        task.wait(0.05)
+    end
+end
+
+local function wow_diamondFollowBoss()
+    if wow_diamondFollowConn then
+        wow_diamondFollowConn:Disconnect()
+        wow_diamondFollowConn = nil
+    end
+    
+    wow_diamondFollowConn = wow_RunService.Heartbeat:Connect(function()
+        if not wow_autoDiamondEnabled then
+            wow_diamondFollowConn:Disconnect()
+            wow_diamondFollowConn = nil
+            return
+        end
+        
+        local wow_char = wow_LocalPlayer.Character
+        if not wow_char then return end
+        
+        local wow_humanoid = wow_char:FindFirstChild("Humanoid")
+        if not wow_humanoid or wow_humanoid.Health <= 0 then return end
+        
+        local wow_boss, wow_bossName = wow_findBoss()
+        if not wow_boss then return end
+        
+        local wow_bossPart = wow_boss.PrimaryPart or wow_boss:FindFirstChildWhichIsA("BasePart")
+        if not wow_bossPart then return end
+        
+        local wow_hrp = wow_char:FindFirstChild("HumanoidRootPart")
+        if not wow_hrp then return end
+        
+        local wow_distance = (wow_hrp.Position - wow_bossPart.Position).Magnitude
+        if wow_distance > 5 then
+            wow_humanoid:MoveTo(wow_bossPart.Position)
+        else
+            wow_humanoid:MoveTo(wow_hrp.Position)
+        end
+    end)
+end
+
+local function wow_diamondBossLoopAuto()
+    while wow_autoDiamondEnabled do
+        if not wow_diamondHasTeleported then
+            local wow_boss, wow_bossName = wow_findBoss()
+            if wow_boss then
+                local wow_char = wow_LocalPlayer.Character
+                if wow_char then
+                    local wow_humanoid = wow_char:FindFirstChild("Humanoid")
+                    if wow_humanoid and wow_humanoid.Health > 0 then
+                        local wow_respawnPos = wow_getRespawnPosition(wow_bossName)
+                        if wow_respawnPos then
+                            wow_humanoid.Health = 0
+                            wow_diamondHasTeleported = true
+                            local wow_connection
+                            wow_connection = wow_LocalPlayer.CharacterAdded:Connect(function(wow_newChar)
+                                task.wait(0.5)
+                                local wow_hrp = wow_newChar:WaitForChild("HumanoidRootPart")
+                                wow_hrp.CFrame = CFrame.new(wow_respawnPos)
+                                wow_connection:Disconnect()
+                                task.wait(0.5)
+                                wow_diamondFollowBoss()
+                            end)
+                        end
+                    end
+                end
+            end
+        end
+        task.wait(0.1)
+    end
+end
+
+wow_FarmTab:Toggle("全自动刷所有boss(只捡钻石)", function(v)
+    wow_autoDiamondEnabled = v
+    wow_diamondHasTeleported = false
+    
+    if v then
+        wow_diamondBossThread = task.spawn(wow_diamondBossLoopAuto)
+        wow_diamondAttackThread = task.spawn(wow_diamondAttackLoopAuto)
+        wow_collectDiamondThread = task.spawn(wow_collectDiamondLoop)
+    else
+        if wow_diamondBossThread then task.cancel(wow_diamondBossThread) wow_diamondBossThread = nil end
+        if wow_diamondAttackThread then task.cancel(wow_diamondAttackThread) wow_diamondAttackThread = nil end
+        if wow_collectDiamondThread then task.cancel(wow_collectDiamondThread) wow_collectDiamondThread = nil end
+        if wow_diamondFollowConn then
+            wow_diamondFollowConn:Disconnect()
+            wow_diamondFollowConn = nil
+        end
+    end
+end)
+
+local enemyList = {}
+local chineseNames = {}
+local attackStates = {}
+local attackThreads = {}
+local autoAttackTasks = {}
+local currentActiveAttack = nil
+
+if game.PlaceId == 116463652873308 then
+    enemyList = {
+        "2_1_1", "2_1_2", "2_1_3", "2_1_4",
+        "2_2_1", "2_2_2", "2_2_3", "2_2_4",
+        "2_3_1", "2_3_2", "2_3_3", "2_3_4",
+        "2_4_1", "2_4_2", "2_4_3", "2_4_4"
+    }
+    chineseNames = {
+        ["2_1_1"] = "1区-僵尸猪人",
+        ["2_1_2"] = "1区-猪灵",
+        ["2_1_3"] = "1区-弓箭猪灵",
+        ["2_1_4"] = "1区-精英猪灵",
+        ["2_2_1"] = "2区-蘑菇",
+        ["2_2_2"] = "2区-红苦力怕",
+        ["2_2_3"] = "2区-僵尸猪兽",
+        ["2_2_4"] = "2区-油猪兽",
+        ["2_3_1"] = "3区-岩浆怪",
+        ["2_3_2"] = "3区-恶魂",
+        ["2_3_3"] = "3区-炽足兽",
+        ["2_3_4"] = "3区-红傀儡",
+        ["2_4_1"] = "4区-凋零骷髅",
+        ["2_4_2"] = "4区-弓箭骷髅",
+        ["2_4_3"] = "4区-盔甲骷髅",
+        ["2_4_4"] = "4区-烈焰人"
+    }
+elseif game.PlaceId == 120704669141193 then
+    enemyList = {
+        "1_1_1", "1_1_2", "1_1_4", "1_1_5", "1_1_6",
+        "1_2_1", "1_2_2", "1_2_3", "1_2_4", "1_2_5",
+        "1_3_1", "1_3_2", "1_3_3", "1_3_4",
+        "1_4_1", "1_4_2", "1_4_3", "1_4_4"
+    }
+    chineseNames = {
+        ["1_1_1"] = "1区-鸡",
+        ["1_1_2"] = "1区-猪",
+        ["1_1_4"] = "1区-羊驼",
+        ["1_1_5"] = "1区-僵尸",
+        ["1_1_6"] = "1区-苦力怕",
+        ["1_2_1"] = "2区-蝙蝠",
+        ["1_2_2"] = "2区-史莱姆",
+        ["1_2_3"] = "2区-铜甲僵尸",
+        ["1_2_4"] = "2区-骷髅",
+        ["1_2_5"] = "2区-蜘蛛",
+        ["1_3_1"] = "3区蜜蜂",
+        ["1_3_2"] = "3区-狗",
+        ["1_3_3"] = "3区-金甲僵尸",
+        ["1_3_4"] = "3区-掠夺兽",
+        ["1_4_1"] = "4区-掠夺者",
+        ["1_4_2"] = "4区-掠夺者队长",
+        ["1_4_3"] = "4区-悦灵手",
+        ["1_4_4"] = "4区-鸡骑士"
+    }
+elseif game.PlaceId == 81256750655373 then
+    enemyList = {
+        "3_1_1", "3_1_2", "3_1_3", "3_1_4"
+    }
+    chineseNames = {
+        ["3_1_1"] = "1区-山羊",
+        ["3_1_2"] = "1区-北极熊",
+        ["3_1_3"] = "1区-雪傀儡",
+        ["3_1_4"] = "4区-雪地骷髅"
+    }
+end
+
+for _, enemyName in ipairs(enemyList) do
+    getgenv()["WOW_AutoFloatAttack_" .. enemyName:gsub("_", "")] = false
+    attackStates[enemyName] = false
+end
+
+local function findNearestEnemy(enemyName)
+    local character = wow_LocalPlayer.Character
+    if not character then return nil end
+    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+    if not humanoidRootPart then return nil end
+    local nearestEnemy = nil
+    local nearestDistance = math.huge
+    for _, obj in pairs(game.Workspace:GetDescendants()) do
+        if obj.Name == enemyName and obj:IsA("Model") then
+            local rootPart = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChild("Torso")
+            if rootPart then
+                local distance = (humanoidRootPart.Position - rootPart.Position).Magnitude
+                if distance < nearestDistance then
+                    nearestDistance = distance
+                    nearestEnemy = obj
+                end
+            end
+        end
+    end
+    return nearestEnemy, nearestDistance
+end
+
+local function autoAttack()
+    while currentActiveAttack do
+        local events = wow_ReplicatedStorage.Events
+        local attackNames = {
+            "SwingTool", "UseTool", "Attack", "Hit", "Damage",
+            "Swing", "SwingShovel", "Dig", "Mine", "Chop",
+            "ToolAction", "ActivateTool", "SwingWeapon"
+        }
+        for _, name in pairs(attackNames) do
+            local event = events:FindFirstChild(name)
+            if event then
+                pcall(function()
+                    event:FireServer()
+                end)
+            end
+        end
+        local character = wow_LocalPlayer.Character
+        if character then
+            for _, tool in pairs(character:GetChildren()) do
+                if tool:IsA("Tool") then
+                    pcall(function()
+                        tool:Activate()
+                    end)
+                end
+            end
+        end
+        task.wait(0.05)
+    end
+end
+
+local function floatToEnemy(enemyName)
+    local connection
+    connection = wow_RunService.Heartbeat:Connect(function(deltaTime)
+        if not attackStates[enemyName] or currentActiveAttack ~= enemyName then
+            connection:Disconnect()
+            return
+        end
+        if not wow_LocalPlayer.Character then return end
+        local humanoidRootPart = wow_LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+        if not humanoidRootPart then return end
+        local enemy, distance = findNearestEnemy(enemyName)
+        if not enemy then return end
+        local enemyRootPart = enemy:FindFirstChild("HumanoidRootPart") or enemy:FindFirstChild("Torso")
+        if not enemyRootPart then return end
+        local currentPos = humanoidRootPart.Position
+        local targetPos = enemyRootPart.Position
+        local direction = (targetPos - currentPos).Unit
+        if distance > 3 then
+            local flySpeed = 30
+            local newPos = currentPos + (direction * flySpeed * deltaTime)
+            humanoidRootPart.Anchored = true
+            humanoidRootPart.CFrame = CFrame.new(newPos)
+            humanoidRootPart.Anchored = false
+            local humanoid = wow_LocalPlayer.Character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid.PlatformStand = true
+                humanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+                humanoidRootPart.RotVelocity = Vector3.new(0, 0, 0)
+                humanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+                humanoidRootPart.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
+                humanoidRootPart:SetNetworkOwner(nil)
+                for _, part in pairs(wow_LocalPlayer.Character:GetDescendants()) do
+                    if part:IsA("BasePart") then
+                        part.CustomPhysicalProperties = PhysicalProperties.new(0, 0, 0, 0, 0)
+                    end
+                end
+            end
+        end
+        humanoidRootPart.CFrame = CFrame.new(humanoidRootPart.Position, targetPos)
+        local head = wow_LocalPlayer.Character:FindFirstChild("Head")
+        if head then
+            head.CFrame = CFrame.new(head.Position, targetPos)
+        end
+        local humanoid = wow_LocalPlayer.Character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.AutoRotate = false
+            humanoid.HipHeight = 0
+        end
+        if wow_LocalPlayer:FindFirstChild("PlayerGui") then
+            local camera = workspace.CurrentCamera
+            if camera then
+                camera.CFrame = CFrame.new(camera.CFrame.Position, targetPos)
+            end
+        end
+    end)
+end
+
+local function stopAllAttack()
+    for enemyName, _ in pairs(attackStates) do
+        attackStates[enemyName] = false
+        getgenv()["WOW_AutoFloatAttack_" .. enemyName:gsub("_", "")] = false
+        if attackThreads[enemyName] then
+            coroutine.close(attackThreads[enemyName])
+            attackThreads[enemyName] = nil
+        end
+        if autoAttackTasks[enemyName] then
+            coroutine.close(autoAttackTasks[enemyName])
+            autoAttackTasks[enemyName] = nil
+        end
+    end
+    currentActiveAttack = nil
+    local character = wow_LocalPlayer.Character
+    if character then
+        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+        if humanoidRootPart then
+            humanoidRootPart.Anchored = false
+            humanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+            humanoidRootPart.Velocity = Vector3.new(0, 0, 0)
+            humanoidRootPart.RotVelocity = Vector3.new(0, 0, 0)
+        end
+        local humanoid = character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.PlatformStand = false
+            humanoid.AutoRotate = true
+            humanoid.HipHeight = 2
+            for _, part in pairs(character:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CustomPhysicalProperties = nil
+                end
+            end
+        end
+    end 
+end
+ 
+local function startAttack(enemyName)
+    stopAllAttack()
+    attackStates[enemyName] = true
+    getgenv()["WOW_AutoFloatAttack_" .. enemyName:gsub("_", "")] = true
+    currentActiveAttack = enemyName
+    attackThreads[enemyName] = task.spawn(function()
+        floatToEnemy(enemyName)
+    end)
+    autoAttackTasks[enemyName] = task.spawn(autoAttack)
+end
+
+wow_FarmTab:Label("选择要攻击的敌人类型(血量少开启原地复活)")
+for _, enemyName in ipairs(enemyList) do
+    local displayName = chineseNames[enemyName] or enemyName
+    wow_FarmTab:Toggle(displayName, function(wowBool)
+        if wowBool then
+            startAttack(enemyName)
+        else
+            attackStates[enemyName] = false
+            getgenv()["WOW_AutoFloatAttack_" .. enemyName:gsub("_", "")] = false
+            if attackThreads[enemyName] then
+                coroutine.close(attackThreads[enemyName])
+                attackThreads[enemyName] = nil
+            end
+            if autoAttackTasks[enemyName] then
+                coroutine.close(autoAttackTasks[enemyName])
+                autoAttackTasks[enemyName] = nil
+            end
+            if currentActiveAttack == enemyName then
+                currentActiveAttack = nil
+                stopAllAttack()
+            end
+        end
+    end)
+end
+local wow_Group0Tab = wow_MainWindow:Tab("信息", false)
+wow_Group0Tab:Label("作者:***")
+wow_Group0Tab:Label("复原者:ROB")
+wow_Group0Tab:Label("更新时间:5月10日")
+wow_Group0Tab:Label("全球Blox战利品最全脚本")
+wow_Group0Tab:Label("脚本完全免费持续更新... ")
+wow_Group0Tab:Label("Blox交流群聊:1003483952")
+wow_Group0Tab:Button("复制群号", function()
+    setclipboard("1003483952")
+end)
