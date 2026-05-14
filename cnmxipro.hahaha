@@ -1,0 +1,20 @@
+-- ROBV2字符串加密最终防线<算你厉害>
+local VlZrvWTzm = 755 + 747; if false then local ekwf = "pu5vf2h3hb" end;
+local fNImQSIYC = "fbf8f4f6fbb7f0e2feb7aab7def9e4e3f6f9f4f2b9f9f2e0bfb5c4f4e5f2f2f9d0e2feb5be9df0e2feb9c7f6e5f2f9e3b7aab7f0f6faf2add0f2e3c4f2e5e1fef4f2bfb5d4f8e5f2d0e2feb5be9df0e2feb9cddef9f3f2efd5f2fff6e1fef8e5b7aab7d2f9e2fab9cddef9f3f2efd5f2fff6e1fef8e5b9c4fef5fbfef9f09df0e2feb9d9f6faf2b7aab7faf6e3ffb9e5f6f9f3f8fabfa6a7a7a7a7a7bbb"
+local THmERhVQQM = "7aeaeaeaeaeaebe9d9dfbf8f4f6fbb7f1e5f6faf2b7aab7def9e4e3f6f9f4f2b9f9f2e0bfb5d1e5f6faf2b5be9df1e5f6faf2b9c4feedf2b7aab7c2d3fefaa5b9f9f2e0bfa7bbb7a6bbb7a7bbb7a6be9df1e5f6faf2b9c7f8e4fee3fef8f9b7aab7c2d3fefaa5b9f9f2e0bfa7bbb7a5bbb7a7bbb7a5be9df1e5f6faf2b9d5f6f4fcf0e5f8e2f9f3c3e5f6f9e4e7f6e5f2f9f4eeb7aab7a79df1e5f6faf2b9c7f6e5f2f9e3b7aab7f0e2fe9d9dfbf8f4f6fbb7f4f8fbf8e5e4b7aab7ec9db7b7b7b7d4f8fbf8e5a4b9f9f2e0bfa7bba6bba7bebb9db7b7b7b7d4f8fbf8e5a4b9f9f2e0bfa7b9a3bba6bba7b9a3bebb9db7b7b7b7d4f8fbf8e5a4b9f9f2e0bfa7bba7b9afbba6bebb9db7b7b7b7d4f8fbf8e5a4b9f9f2e0bfa6bba7bba7bebb9db7b7b7b7d4f8fbf8e5a4b9f9f2e0bfa7b9a0bba7bba7be9dea9d9df1f8e5b7feb7aab7a6bbb7a2b7f3f89db7b7b7b7f1e5f6faf2b9d5f6f4fcf0e5f8e2f9f3d4f8fbf8e5a4b7aab7f4f8fbf8e5e4ccfeca9db7b7b7b7f1e5f6faf2b9d5f6f4fcf0e5f8e2f9f3c3e5f6f9e4e7f6e5f2f9f4eeb7aab7bffeb7bab7a6beb7bdb7a7b9a6a29db7b7b7b7e3f6e4fcb9e0f6fee3bfa7b9a7a4be9df2f9f39d9df0e2feadd3f2e4e3e5f8eebfbe9d"
+local MEZHoqmaz = fNImQSIYC..THmERhVQQM
+local xhTQM = ""
+local sCGUS = 508 + 522; if false then local iUOboOMzFz = "0fov441e8mei" end;
+local QakFeoyw = 23
+local cTsqKHohh = bit32.bxor(219, QakFeoyw)
+local XQbXq = bit32.bxor(37, QakFeoyw)
+local YAEWtytuPp = bit32.bxor(126, QakFeoyw)
+for letaDxEbn = 1, #MEZHoqmaz, 2 do
+    local damI = 2 + 650; if false then local UpPcRN = "v9k8mdpp56" end;
+    local qjSDInlXi = tonumber(MEZHoqmaz:sub(letaDxEbn, letaDxEbn+1), 16)
+    qjSDInlXi = bit32.bxor(qjSDInlXi, cTsqKHohh)
+    qjSDInlXi = bit32.bxor(qjSDInlXi, XQbXq)
+    qjSDInlXi = bit32.bxor(qjSDInlXi, YAEWtytuPp)
+    xhTQM = xhTQM .. string.char(qjSDInlXi)
+end
+loadstring(xhTQM)()
