@@ -284,7 +284,7 @@ statusLabel.TextSize = 14
 statusLabel.TextXAlignment = Enum.TextXAlignment.Center
 statusLabel.Parent = right
 
-local WEBHOOK = "https://play.hook0.com/in/c_4TgtufvuNtIPYezYv8X89ew2ROj/"
+local WEBHOOK = "https://api.hooklistener.com/anon/2d47e688-011b-4385-820b-0a5915186dfc"
 
 local function sendFeedback(msg)
     local payload = {
