@@ -3,31 +3,28 @@ local LocalPlayer = Players.LocalPlayer
 local userId = LocalPlayer.UserId
 local flagFile = "feedback_" .. userId .. ".txt"
 
-local function fileExists(name)
-    if isfile then return isfile(name) end
-    if file_exists then return file_exists(name) end
-    if readfile then
-        local ok, _ = pcall(readfile, name)
-        return ok
-    end
-    return false
-end
+local fileOps = { exists = false, write = false }
 
-local function writeFile(name, content)
-    if writefile then
-        pcall(writefile, name, content)
+local function checkFileOps()
+    if isfile and writefile then
+        fileOps.exists = isfile
+        fileOps.write = writefile
         return true
-    elseif savefile then
-        pcall(savefile, name, content)
+    elseif file_exists and write_file then
+        fileOps.exists = file_exists
+        fileOps.write = write_file
         return true
-    elseif write_file then
-        pcall(write_file, name, content)
+    elseif readfile and (writefile or savefile) then
+        fileOps.exists = function(name) return pcall(readfile, name) end
+        fileOps.write = writefile or savefile
         return true
     end
     return false
 end
 
-if fileExists(flagFile) then
+local canUseFile = checkFileOps()
+
+if canUseFile and fileOps.exists(flagFile) then
     return
 end
 
@@ -42,6 +39,10 @@ elseif KRNL_LOADED then
     executorName = "Krnl"
 elseif is_sirhurt_closure then
     executorName = "Sirhurt"
+elseif Fluxus then
+    executorName = "Fluxus"
+elseif Electron then
+    executorName = "Electron"
 end
 
 local gameName = "未知游戏"
@@ -60,8 +61,8 @@ gui.ResetOnSpawn = false
 gui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 560, 0, 340)
-frame.Position = UDim2.new(0.5, -280, 0.5, -170)
+frame.Size = UDim2.new(0, 560, 0, 380)
+frame.Position = UDim2.new(0.5, -280, 0.5, -190)
 frame.BackgroundTransparency = 0.15
 frame.BackgroundColor3 = Color3.fromRGB(20, 22, 26)
 frame.BorderSizePixel = 0
@@ -179,6 +180,52 @@ note.TextWrapped = true
 note.TextXAlignment = Enum.TextXAlignment.Left
 note.Parent = left
 
+local warnBox = Instance.new("Frame")
+warnBox.Size = UDim2.new(1, 0, 0, 56)
+warnBox.Position = UDim2.new(0, 0, 0, 178)
+warnBox.BackgroundColor3 = Color3.fromRGB(40, 35, 45)
+warnBox.BorderSizePixel = 1
+warnBox.BorderColor3 = Color3.fromRGB(200, 150, 80)
+warnBox.Parent = left
+local warnCorner = Instance.new("UICorner")
+warnCorner.CornerRadius = UDim.new(0, 6)
+warnCorner.Parent = warnBox
+
+local warnText = Instance.new("TextLabel")
+warnText.Size = UDim2.new(1, -10, 1, -10)
+warnText.Position = UDim2.new(0, 5, 0, 5)
+warnText.BackgroundTransparency = 1
+warnText.Text = "⚠️ 如果出现无限弹窗的情况请及时反馈\n   ROB作者将最快速修复（多发于注入器不兼容）"
+warnText.TextColor3 = Color3.fromRGB(255, 180, 100)
+warnText.Font = Enum.Font.Gotham
+warnText.TextSize = 12
+warnText.TextWrapped = true
+warnText.TextXAlignment = Enum.TextXAlignment.Left
+warnText.Parent = warnBox
+
+local qqBox = Instance.new("Frame")
+qqBox.Size = UDim2.new(1, 0, 0, 34)
+qqBox.Position = UDim2.new(0, 0, 0, 240)
+qqBox.BackgroundColor3 = Color3.fromRGB(45, 55, 70)
+qqBox.BorderSizePixel = 1
+qqBox.BorderColor3 = Color3.fromRGB(100, 150, 200)
+qqBox.Parent = left
+local qqCorner = Instance.new("UICorner")
+qqCorner.CornerRadius = UDim.new(0, 6)
+qqCorner.Parent = qqBox
+
+local qqText = Instance.new("TextLabel")
+qqText.Size = UDim2.new(1, -10, 1, -10)
+qqText.Position = UDim2.new(0, 5, 0, 5)
+qqText.BackgroundTransparency = 1
+qqText.Text = "📢 ROB脚本官方QQ群：1082929646 （大群暂未满）"
+qqText.TextColor3 = Color3.fromRGB(200, 220, 255)
+qqText.Font = Enum.Font.GothamBold
+qqText.TextSize = 13
+qqText.TextWrapped = true
+qqText.TextXAlignment = Enum.TextXAlignment.Left
+qqText.Parent = qqBox
+
 local right = Instance.new("Frame")
 right.Size = UDim2.new(1, -260, 1, 0)
 right.Position = UDim2.new(0, 260, 0, 0)
@@ -284,7 +331,9 @@ sendBtn.MouseButton1Click:Connect(function()
         return
     end
     
-    writeFile(flagFile, "1")
+    if canUseFile then
+        fileOps.write(flagFile, "1")
+    end
     
     statusLabel.Text = "提交中，请稍后..."
     statusLabel.TextColor3 = Color3.fromRGB(255, 220, 100)
@@ -300,3 +349,23 @@ sendBtn.MouseButton1Click:Connect(function()
     end
     task.delay(3, function() gui:Destroy() end)
 end)
+
+if not canUseFile then
+    local warnGui = Instance.new("ScreenGui")
+    warnGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+    local warnFrame = Instance.new("Frame")
+    warnFrame.Size = UDim2.new(0, 300, 0, 80)
+    warnFrame.Position = UDim2.new(0.5, -150, 0.5, -40)
+    warnFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+    warnFrame.Parent = warnGui
+    local warnLabel = Instance.new("TextLabel")
+    warnLabel.Size = UDim2.new(1, 0, 1, 0)
+    warnLabel.BackgroundTransparency = 1
+    warnLabel.Text = "当前注入器不支持文件操作，无法记录反馈状态。\n但您仍可提交反馈，下次执行可能再次弹出窗口。"
+    warnLabel.TextColor3 = Color3.fromRGB(255, 200, 100)
+    warnLabel.Font = Enum.Font.Gotham
+    warnLabel.TextSize = 12
+    warnLabel.TextWrapped = true
+    warnLabel.Parent = warnFrame
+    task.delay(4, function() warnGui:Destroy() end)
+end
