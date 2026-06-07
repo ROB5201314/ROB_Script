@@ -90,7 +90,7 @@ local title = Instance.new("TextLabel")
 title.Size = UDim2.new(1, -40, 0, 40)
 title.Position = UDim2.new(0, 10, 0, 0)
 title.BackgroundTransparency = 1
-title.Text = "隐身控制"
+title.Text = "ROB隐身控制"
 title.Font = Enum.Font.SourceSansBold
 title.TextSize = 20
 title.TextColor3 = Color3.new(0.05, 0.45, 1)
@@ -123,33 +123,33 @@ local dragStart = nil
 local frameStart = nil
 
 dragTrigger.InputBegan:Connect(function(input, processed)
-    if processed 然后 return end
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch 然后
-        if not dragging 然后
+    if processed then return end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        if not dragging then
             dragging = true
-            dragInput=输入
-            dragstart=输入.位置
-            frameStart=大型机.位置
-        结束
-    结束
-结束)
+            dragInput = input
+            dragStart = input.Position
+            frameStart = mainFrame.Position
+        end
+    end
+end)
 
-UserInputService.InputChanged：连接(函数(输入，已处理)
-如果 不 拖拽 然后 返回 结束
-    如果 输入==dragInput 然后
-        如果 输入.UserInputType==enum.UserInputType.MouseMovement or 输入.UserInputType==enum.UserInputType.Touch 然后
-            当地的 三角洲=输入.位置 - dragstart
-            大型机.位置=UDim2.新的(
-                frameStart.X.规模,frameStart.X.Offset+三角洲.X,
-                frameStart.Y.规模,frameStart.Y.Offset+三角洲.Y
+UserInputService.InputChanged:Connect(function(input, processed)
+    if not dragging then return end
+    if input == dragInput then
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            local delta = input.Position - dragStart
+            mainFrame.Position = UDim2.new(
+                frameStart.X.Scale, frameStart.X.Offset + delta.X,
+                frameStart.Y.Scale, frameStart.Y.Offset + delta.Y
             )
-        结束
-    结束
-结束)
+        end
+    end
+end)
 
-UserInputService.InputEnded：连接(函数(输入，已处理)
-    如果 输入==dragInput 然后
-        拖拽=假的
-        dragInput=零
-    结束
-结束)
+UserInputService.InputEnded:Connect(function(input, processed)
+    if input == dragInput then
+        dragging = false
+        dragInput = nil
+    end
+end)
