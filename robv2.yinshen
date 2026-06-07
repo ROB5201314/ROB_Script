@@ -1,0 +1,155 @@
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local player = Players.LocalPlayer
+local sound = Instance.new("Sound", player.PlayerGui)
+sound.SoundId = "rbxassetid://942127495"
+sound.Volume = 1
+
+local invis_on = false
+local function setTransparency(character, transparency)
+    for _, part in pairs(character:GetDescendants()) do
+        if part:IsA("BasePart") or part:IsA("Decal") then
+            part.Transparency = transparency
+        end
+    end
+end
+local function toggleInvisibility()
+    invis_on = not invis_on
+    sound:Play()
+    if invis_on then
+        local savedpos = player.Character.HumanoidRootPart.CFrame
+        task.wait()
+        player.Character:MoveTo(Vector3.new(0, 100, 0))
+        task.wait(0.15)
+        local Seat = Instance.new("Seat", workspace)
+        Seat.Anchored = false
+        Seat.CanCollide = false
+        Seat.Name = "invischair"
+        Seat.Transparency = 1
+        Seat.Position = Vector3.new(0, 100, 0)
+        local Weld = Instance.new("Weld", Seat)
+        Weld.Part0 = Seat
+        Weld.Part1 = player.Character:FindFirstChild("Torso") or player.Character.UpperTorso
+        task.wait()
+        Seat.CFrame = savedpos
+        setTransparency(player.Character, 0.5)
+    else
+        local invisChair = workspace:FindFirstChild("invischair")
+        if invisChair then invisChair:Destroy() end
+        setTransparency(player.Character, 0)
+    end
+end
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "InvisUI"
+gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.Parent = player.PlayerGui
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 220, 0, 80)
+mainFrame.Position = UDim2.new(0.5, -110, 0.5, -40)
+mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+mainFrame.BackgroundTransparency = 0.3
+mainFrame.BorderSizePixel = 0
+mainFrame.ZIndex = 1
+mainFrame.Parent = gui
+
+local stroke = Instance.new("UIStroke")
+stroke.Color = Color3.new(0.05, 0.45, 1)
+stroke.Thickness = 2
+stroke.Transparency = 0.2
+stroke.Parent = mainFrame
+
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 30, 0, 30)
+closeBtn.Position = UDim2.new(1, -35, 0, 5)
+closeBtn.BackgroundTransparency = 1
+closeBtn.Text = "X"
+closeBtn.Font = Enum.Font.SourceSansBold
+closeBtn.TextSize = 22
+closeBtn.TextColor3 = Color3.new(0, 0, 0)
+closeBtn.TextStrokeTransparency = 0
+closeBtn.TextStrokeColor3 = Color3.new(1, 1, 1)
+closeBtn.ZIndex = 10
+closeBtn.Parent = mainFrame
+
+closeBtn.Activated:Connect(function()
+    gui:Destroy()
+end)
+
+local dragTrigger = Instance.new("Frame")
+dragTrigger.Size = UDim2.new(1, -40, 0, 40)
+dragTrigger.Position = UDim2.new(0, 0, 0, 0)
+dragTrigger.BackgroundTransparency = 1
+dragTrigger.Active = true
+dragTrigger.ZIndex = 1
+dragTrigger.Parent = mainFrame
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, -40, 0, 40)
+title.Position = UDim2.new(0, 10, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "隐身控制"
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 20
+title.TextColor3 = Color3.new(0.05, 0.45, 1)
+title.TextStrokeTransparency = 0.5
+title.ZIndex = 2
+title.Parent = mainFrame
+
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Size = UDim2.new(0.9, 0, 0, 35)
+toggleBtn.Position = UDim2.new(0.05, 0, 0, 45)
+toggleBtn.BackgroundColor3 = Color3.new(0.05, 0.45, 1)
+toggleBtn.BackgroundTransparency = 0.2
+toggleBtn.Text = "开启隐身"
+toggleBtn.Font = Enum.Font.SourceSansBold
+toggleBtn.TextSize = 18
+toggleBtn.TextColor3 = Color3.new(1, 1, 1)
+toggleBtn.TextStrokeTransparency = 0.5
+toggleBtn.ZIndex = 10
+toggleBtn.Parent = mainFrame
+
+toggleBtn.Activated:Connect(function()
+    toggleInvisibility()
+    toggleBtn.Text = invis_on and "关闭隐身" or "开启隐身"
+    toggleBtn.BackgroundColor3 = invis_on and Color3.new(0.8, 0.2, 0.2) or Color3.new(0.05, 0.45, 1)
+end)
+
+local dragging = false
+local dragInput = nil
+local dragStart = nil
+local frameStart = nil
+
+dragTrigger.InputBegan:Connect(function(input, processed)
+    if processed 然后 return end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch 然后
+        if not dragging 然后
+            dragging = true
+            dragInput=输入
+            dragstart=输入.位置
+            frameStart=大型机.位置
+        结束
+    结束
+结束)
+
+UserInputService.InputChanged：连接(函数(输入，已处理)
+如果 不 拖拽 然后 返回 结束
+    如果 输入==dragInput 然后
+        如果 输入.UserInputType==enum.UserInputType.MouseMovement or 输入.UserInputType==enum.UserInputType.Touch 然后
+            当地的 三角洲=输入.位置 - dragstart
+            大型机.位置=UDim2.新的(
+                frameStart.X.规模,frameStart.X.Offset+三角洲.X,
+                frameStart.Y.规模,frameStart.Y.Offset+三角洲.Y
+            )
+        结束
+    结束
+结束)
+
+UserInputService.InputEnded：连接(函数(输入，已处理)
+    如果 输入==dragInput 然后
+        拖拽=假的
+        dragInput=零
+    结束
+结束)
