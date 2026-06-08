@@ -1,0 +1,372 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local player = Players.LocalPlayer
+
+local autoJumpEnabled = false
+local jumpPower = 20
+local jumpDelay = 0.5
+local lastJumpTime = 0
+local jumpConnection = nil
+
+local function doJump()
+    local char = player.Character
+    if not char then return end
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if hum and hum.Health > 0 and not hum.Sit then
+        hum.JumpPower = jumpPower
+        hum:ChangeState(Enum.HumanoidStateType.Jumping)
+        lastJumpTime = tick()
+    end
+end
+
+local function updateLoop()
+    if not autoJumpEnabled then return end
+    local char = player.Character
+    if not char then return end
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if not hum then return end
+    local grounded = hum.FloorMaterial ~= Enum.Material.Air
+    if grounded and tick() - lastJumpTime >= jumpDelay then
+        doJump()
+    end
+end
+
+local function startAutoJump()
+    if jumpConnection then return end
+    lastJumpTime = tick() - jumpDelay
+    jumpConnection = RunService.Heartbeat:Connect(updateLoop)
+end
+
+local function stopAutoJump()
+    if jumpConnection then
+        jumpConnection:Disconnect()
+        jumpConnection = nil
+    end
+end
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "AutoJumpUI"
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
+
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 200, 0, 160)
+mainFrame.Position = UDim2.new(0.5, -100, 0.5, -80)
+mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+mainFrame.BackgroundTransparency = 0.4
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = gui
+
+local borderStroke = Instance.new("UIStroke")
+borderStroke.Color = Color3.fromRGB(80, 150, 255)
+borderStroke.Thickness = 1.5
+borderStroke.Transparency = 0.3
+borderStroke.Parent = mainFrame
+
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 3)
+corner.Parent = mainFrame
+
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1, 0, 0, 28)
+titleBar.BackgroundTransparency = 1
+titleBar.Parent = mainFrame
+
+local titleText = Instance.new("TextLabel")
+titleText.Size = UDim2.new(0.6, 0, 1, 0)
+titleText.Position = UDim2.new(0.05, 0, 0, 0)
+titleText.BackgroundTransparency = 1
+titleText.Text = "ROB自动跳跃系统"
+titleText.TextColor3 = Color3.new(1, 1, 1)
+titleText.TextSize = 14
+titleText.Font = Enum.Font.GothamBold
+titleText.TextXAlignment = Enum.TextXAlignment.Left
+titleText.TextYAlignment = Enum.TextYAlignment.Center
+titleText.Parent = titleBar
+
+local foldBtn = Instance.new("TextButton")
+foldBtn.Size = UDim2.new(0, 22, 0, 22)
+foldBtn.Position = UDim2.new(1, -48, 0.5, -11)
+foldBtn.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+foldBtn.BackgroundTransparency = 0.3
+foldBtn.Text = "-"
+foldBtn.TextColor3 = Color3.new(1,1,1)
+foldBtn.TextSize = 18
+foldBtn.Font = Enum.Font.GothamBold
+foldBtn.Parent = titleBar
+local foldStroke = Instance.new("UIStroke")
+foldStroke.Color = Color3.new(1,1,1)
+foldStroke.Thickness = 1
+foldStroke.Transparency = 0.5
+foldStroke.Parent = foldBtn
+local foldCorner = Instance.new("UICorner")
+foldCorner.CornerRadius = UDim.new(0, 3)
+foldCorner.Parent = foldBtn
+
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 22, 0, 22)
+closeBtn.Position = UDim2.new(1, -24, 0.5, -11)
+closeBtn.BackgroundColor3 = Color3.new(0, 0, 0)
+closeBtn.BackgroundTransparency = 0.3
+closeBtn.Text = "×"
+closeBtn.TextColor3 = Color3.new(1,0.3,0.3)
+closeBtn.TextSize = 18
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.Parent = titleBar
+local closeStroke = Instance.new("UIStroke")
+closeStroke.Color = Color3.new(1,1,1)
+closeStroke.Thickness = 1
+closeStroke.Transparency = 0.5
+closeStroke.Parent = closeBtn
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(0, 3)
+closeCorner.Parent = closeBtn
+
+closeBtn.MouseButton1Click:Connect(function()
+    stopAutoJump()
+    gui:Destroy()
+end)
+
+local content = Instance.new("Frame")
+content.Size = UDim2.new(1, -12, 1, -36)
+content.Position = UDim2.new(0, 6, 0, 32)
+content.BackgroundTransparency = 1
+content.Parent = mainFrame
+
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Size = UDim2.new(0.44, 0, 0, 32)
+toggleBtn.Position = UDim2.new(0.28, 0, 0, 0)
+toggleBtn.BackgroundColor3 = Color3.fromRGB(60, 180, 60)
+toggleBtn.BackgroundTransparency = 0.2
+toggleBtn.Text = "开启"
+toggleBtn.TextColor3 = Color3.new(1,1,1)
+toggleBtn.Font = Enum.Font.GothamBold
+toggleBtn.TextSize = 14
+toggleBtn.Parent = content
+local toggleStroke = Instance.new("UIStroke")
+toggleStroke.Color = Color3.new(1,1,1)
+toggleStroke.Thickness = 1
+toggleStroke.Transparency = 0.4
+toggleStroke.Parent = toggleBtn
+local toggleCorner = Instance.new("UICorner")
+toggleCorner.CornerRadius = UDim.new(0, 3)
+toggleCorner.Parent = toggleBtn
+
+local delayLabel = Instance.new("TextLabel")
+delayLabel.Size = UDim2.new(0.48, 0, 0, 20)
+delayLabel.Position = UDim2.new(0, 0, 0, 44)
+delayLabel.BackgroundTransparency = 1
+delayLabel.Text = "延迟: " .. string.format("%.2f", jumpDelay) .. "s"
+delayLabel.TextColor3 = Color3.new(0.9,0.9,0.9)
+delayLabel.TextSize = 11
+delayLabel.Font = Enum.Font.Gotham
+delayLabel.TextXAlignment = Enum.TextXAlignment.Left
+delayLabel.Parent = content
+
+local delaySliderBg = Instance.new("Frame")
+delaySliderBg.Size = UDim2.new(0.9, 0, 0, 5)
+delaySliderBg.Position = UDim2.new(0, 0, 0, 66)
+delaySliderBg.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+delaySliderBg.BackgroundTransparency = 0.5
+delaySliderBg.Parent = content
+local delaySliderCorner = Instance.new("UICorner")
+delaySliderCorner.CornerRadius = UDim.new(0, 3)
+delaySliderCorner.Parent = delaySliderBg
+
+local delaySliderBtn = Instance.new("TextButton")
+delaySliderBtn.Size = UDim2.new(0, 14, 0, 14)
+delaySliderBtn.BackgroundColor3 = Color3.fromRGB(80, 150, 255)
+delaySliderBtn.Text = ""
+delaySliderBtn.Parent = delaySliderBg
+local delayBtnCorner = Instance.new("UICorner")
+delayBtnCorner.CornerRadius = UDim.new(1, 0)
+delayBtnCorner.Parent = delaySliderBtn
+
+local heightLabel = Instance.new("TextLabel")
+heightLabel.Size = UDim2.new(0.48, 0, 0, 20)
+heightLabel.Position = UDim2.new(0, 0, 0, 88)
+heightLabel.BackgroundTransparency = 1
+heightLabel.Text = "高度: " .. jumpPower
+heightLabel.TextColor3 = Color3.new(0.9,0.9,0.9)
+heightLabel.TextSize = 11
+heightLabel.Font = Enum.Font.Gotham
+heightLabel.TextXAlignment = Enum.TextXAlignment.Left
+heightLabel.Parent = content
+
+local heightSliderBg = Instance.new("Frame")
+heightSliderBg.Size = UDim2.new(0.9, 0, 0, 5)
+heightSliderBg.Position = UDim2.new(0, 0, 0, 110)
+heightSliderBg.BackgroundColor3 = Color3.new(0.3, 0.3, 0.3)
+heightSliderBg.BackgroundTransparency = 0.5
+heightSliderBg.Parent = content
+local heightSliderCorner = Instance.new("UICorner")
+heightSliderCorner.CornerRadius = UDim.new(0, 3)
+heightSliderCorner.Parent = heightSliderBg
+
+local heightSliderBtn = Instance.new("TextButton")
+heightSliderBtn.Size = UDim2.new(0, 14, 0, 14)
+heightSliderBtn.BackgroundColor3 = Color3.fromRGB(80, 150, 255)
+heightSliderBtn.Text = ""
+heightSliderBtn.Parent = heightSliderBg
+local heightBtnCorner = Instance.new("UICorner")
+heightBtnCorner.CornerRadius = UDim.new(1, 0)
+heightBtnCorner.Parent = heightSliderBtn
+
+local draggingDelay = false
+local draggingHeight = false
+
+local function updateDelayFromSlider(percent)
+    percent = math.clamp(percent, 0, 1)
+    jumpDelay = 0.01 + percent * 9.99
+    delayLabel.Text = "延迟: " .. string.format("%.2f", jumpDelay) .. "s"
+end
+
+local function updateHeightFromSlider(percent)
+    percent = math.clamp(percent, 0, 1)
+    jumpPower = math.floor(1 + percent * 499)
+    heightLabel.Text = "高度: " .. jumpPower
+end
+
+local function setSliderPositions()
+    task.wait(0.05)
+    if delaySliderBg.AbsoluteSize.X > 0 then
+        local delayPercent = (jumpDelay - 0.01) / 9.99
+        delaySliderBtn.Position = UDim2.new(delayPercent, -7, 0.5, -7)
+    end
+    if heightSliderBg.AbsoluteSize.X > 0 then
+        local heightPercent = (jumpPower - 1) / 499
+        heightSliderBtn.Position = UDim2.new(heightPercent, -7, 0.5, -7)
+    end
+end
+
+local function onDelayDrag(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        draggingDelay = true
+        local mousePos = UserInputService:GetMouseLocation()
+        local relativeX = math.clamp(mousePos.X - delaySliderBg.AbsolutePosition.X, 0, delaySliderBg.AbsoluteSize.X)
+        local percent = relativeX / delaySliderBg.AbsoluteSize.X
+        delaySliderBtn.Position = UDim2.new(percent, -7, 0.5, -7)
+        updateDelayFromSlider(percent)
+    end
+end
+
+local function onHeightDrag(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        draggingHeight = true
+        local mousePos = UserInputService:GetMouseLocation()
+        local relativeX = math.clamp(mousePos.X - heightSliderBg.AbsolutePosition.X, 0, heightSliderBg.AbsoluteSize.X)
+        local percent = relativeX / heightSliderBg.AbsoluteSize.X
+        heightSliderBtn.Position = UDim2.new(percent, -7, 0.5, -7)
+        updateHeightFromSlider(percent)
+    end
+end
+
+delaySliderBtn.InputBegan:Connect(onDelayDrag)
+heightSliderBtn.InputBegan:Connect(onHeightDrag)
+
+delaySliderBg.InputBegan:Connect(function(input, gpe)
+    if gpe then return end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        local mousePos = input.Position
+        local relativeX = math.clamp(mousePos.X - delaySliderBg.AbsolutePosition.X, 0, delaySliderBg.AbsoluteSize.X)
+        local percent = relativeX / delaySliderBg.AbsoluteSize.X
+        delaySliderBtn.Position = UDim2.new(percent, -7, 0.5, -7)
+        updateDelayFromSlider(percent)
+        draggingDelay = true
+    end
+end)
+
+heightSliderBg.InputBegan:Connect(function(input, gpe)
+    if gpe then return end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        local mousePos = input.Position
+        local relativeX = math.clamp(mousePos.X - heightSliderBg.AbsolutePosition.X, 0, heightSliderBg.AbsoluteSize.X)
+        local percent = relativeX / heightSliderBg.AbsoluteSize.X
+        heightSliderBtn.Position = UDim2.new(percent, -7, 0.5, -7)
+        updateHeightFromSlider(percent)
+        draggingHeight = true
+    end
+end)
+
+RunService.RenderStepped:Connect(function()
+    if draggingDelay then
+        local mousePos = UserInputService:GetMouseLocation()
+        local relativeX = math.clamp(mousePos.X - delaySliderBg.AbsolutePosition.X, 0, delaySliderBg.AbsoluteSize.X)
+        local percent = relativeX / delaySliderBg.AbsoluteSize.X
+        delaySliderBtn.Position = UDim2.new(percent, -7, 0.5, -7)
+        updateDelayFromSlider(percent)
+    end
+    if draggingHeight then
+        local mousePos = UserInputService:GetMouseLocation()
+        local relativeX = math.clamp(mousePos.X - heightSliderBg.AbsolutePosition.X, 0, heightSliderBg.AbsoluteSize.X)
+        local percent = relativeX / heightSliderBg.AbsoluteSize.X
+        heightSliderBtn.Position = UDim2.new(percent, -7, 0.5, -7)
+        updateHeightFromSlider(percent)
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        draggingDelay = false
+        draggingHeight = false
+    end
+end)
+
+toggleBtn.MouseButton1Click:Connect(function()
+    autoJumpEnabled = not autoJumpEnabled
+    if autoJumpEnabled then
+        startAutoJump()
+        toggleBtn.Text = "关闭"
+        toggleBtn.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
+    else
+        stopAutoJump()
+        toggleBtn.Text = "开启"
+        toggleBtn.BackgroundColor3 = Color3.fromRGB(60, 180, 60)
+    end
+end)
+
+local folded = false
+foldBtn.MouseButton1Click:Connect(function()
+    folded = not folded
+    if folded then
+        content.Visible = false
+        mainFrame.Size = UDim2.new(0, 200, 0, 36)
+        foldBtn.Text = "+"
+    else
+        content.Visible = true
+        mainFrame.Size = UDim2.new(0, 200, 0, 160)
+        foldBtn.Text = "-"
+    end
+end)
+
+local dragging = false
+local dragStart, frameStart
+titleBar.InputBegan:Connect(function(input, gpe)
+    if gpe then return end
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        frameStart = mainFrame.Position
+    end
+end)
+UserInputService.InputChanged:Connect(function(input, gpe)
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local delta = input.Position - dragStart
+        mainFrame.Position = UDim2.new(frameStart.X.Scale, frameStart.X.Offset + delta.X,
+                                       frameStart.Y.Scale, frameStart.Y.Offset + delta.Y)
+    end
+end)
+UserInputService.InputEnded:Connect(function(input, gpe)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = false
+    end
+end)
+
+player.CharacterAdded:Connect(function()
+    if autoJumpEnabled then
+        lastJumpTime = tick() - jumpDelay
+    end
+end)
+
+setSliderPositions()
