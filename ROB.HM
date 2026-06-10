@@ -2,8 +2,7 @@ local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local TweenService = game:GetService("TweenService")
 
-local mainMessage = "ROB脚本将于本周进行大更新，更新内容为更多通过投稿的通用功能，70+有用的服务器脚本，删除原来无用的服务器脚本，作者以宣传为动力，玩此脚本的别忘了发到随意平台上进行脚本分享哦～"
-local subMessage = "点击弹窗消除浮字"
+local message = "ROB脚本将于本周进行大更新，更新内容为更多通过投稿的通用功能，70+有用的服务器脚本，删除原来无用的服务器脚本，作者以宣传为动力，玩此脚本的别忘了发到随意平台上进行脚本分享哦～"
 local interval = 300
 
 local active = true
@@ -32,66 +31,50 @@ local function createFloating()
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
     screenGui.Parent = Player:WaitForChild("PlayerGui")
     
-    local function createTextFrame(text, textColor)
-        local textLabel = Instance.new("TextLabel")
-        textLabel.Text = text
-        textLabel.TextSize = 18
-        textLabel.Font = Enum.Font.SourceSansBold
-        textLabel.TextColor3 = textColor
-        textLabel.BackgroundTransparency = 1
-        textLabel.TextXAlignment = Enum.TextXAlignment.Center
-        textLabel.TextYAlignment = Enum.TextYAlignment.Center
-        textLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
-        textLabel.TextStrokeTransparency = 0
-        textLabel.Size = UDim2.new(0, 0, 0, 40)
-        textLabel.AutoLocalize = false
-        
-        local bounds = textLabel.TextBounds
-        local padding = 30
-        local width = bounds.X + padding * 2
-        local height = 40
-        textLabel.Size = UDim2.new(0, width, 0, height)
-        
-        local frame = Instance.new("Frame")
-        frame.BackgroundTransparency = 1
-        frame.Size = UDim2.new(0, width, 0, height)
-        
-        local stroke = Instance.new("UIStroke")
-        stroke.Thickness = 0.3
-        stroke.Color = Color3.fromRGB(180, 80, 255)
-        stroke.Transparency = 0
-        stroke.Parent = frame
-        
-        textLabel.Parent = frame
-        textLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
-        textLabel.AnchorPoint = Vector2.new(0.5, 0.5)
-        
-        return frame, width, height
-    end
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Text = message
+    textLabel.TextSize = 18
+    textLabel.Font = Enum.Font.SourceSansBold
+    textLabel.TextColor3 = Color3.fromRGB(255, 215, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.TextXAlignment = Enum.TextXAlignment.Center
+    textLabel.TextYAlignment = Enum.TextYAlignment.Center
+    textLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    textLabel.TextStrokeTransparency = 0
+    textLabel.Size = UDim2.new(0, 0, 0, 40)
+    textLabel.AutoLocalize = false
+    textLabel.Parent = screenGui
     
-    local subFrame, subWidth, subHeight = createTextFrame(subMessage, Color3.fromRGB(0, 150, 255))
-    local mainFrame, mainWidth, mainHeight = createTextFrame(mainMessage, Color3.fromRGB(255, 215, 0))
+    local textBounds = textLabel.TextBounds
+    local padding = 30
+    local textWidth = textBounds.X + padding * 2
+    local textHeight = 40
+    textLabel.Size = UDim2.new(0, textWidth, 0, textHeight)
+    textLabel.Position = UDim2.new(1, 0, 0.03, 0)
     
-    local gap = 10
-    local totalWidth = subWidth + gap + mainWidth
-    local height = math.max(subHeight, mainHeight)
+    local framePadding = 0
+    local frameWidth = textWidth + framePadding * 2
+    local frameHeight = textHeight + framePadding * 2
     
-    local container = Instance.new("Frame")
-    container.BackgroundTransparency = 1
-    container.Size = UDim2.new(0, totalWidth, 0, height)
-    container.Position = UDim2.new(1, 0, 0.03, 0)
-    container.Parent = screenGui
+    local frame = Instance.new("Frame")
+    frame.BackgroundTransparency = 1
+    frame.Size = UDim2.new(0, frameWidth, 0, frameHeight)
+    frame.Position = UDim2.new(1, 0, 0.03, 0)
+    frame.Parent = screenGui
     
-    subFrame.Parent = container
-    mainFrame.Parent = container
-    subFrame.Position = UDim2.new(0, 0, 0.5, 0)
-    mainFrame.Position = UDim2.new(0, subWidth + gap, 0.5, 0)
-    subFrame.AnchorPoint = Vector2.new(0, 0.5)
-    mainFrame.AnchorPoint = Vector2.new(0, 0.5)
+    local stroke = Instance.new("UIStroke")
+    stroke.Thickness = 0.3
+    stroke.Color = Color3.fromRGB(180, 80, 255)
+    stroke.Transparency = 0
+    stroke.Parent = frame
     
-    local endPos = UDim2.new(0, -totalWidth, 0.03, 0)
+    textLabel.Parent = frame
+    textLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+    textLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+    
+    local endPos = UDim2.new(0, -frameWidth, frame.Position.Y.Scale, 0)
     local tweenInfo = TweenInfo.new(20, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
-    currentTween = TweenService:Create(container, tweenInfo, {Position = endPos})
+    currentTween = TweenService:Create(frame, tweenInfo, {Position = endPos})
     currentTween.Completed:Connect(function()
         if currentFloating == screenGui then
             destroyFloating()
@@ -99,18 +82,14 @@ local function createFloating()
     end)
     currentTween:Play()
     
-    local function onTap()
-        active = false
-        destroyFloating()
-        if timerConnection then
-            timerConnection:Disconnect()
-            timerConnection = nil
-        end
-    end
-    
-    container.InputBegan:Connect(function(input)
+    frame.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            onTap()
+            active = false
+            destroyFloating()
+            if timerConnection then
+                timerConnection:Disconnect()
+                timerConnection = nil
+            end
         end
     end)
     
