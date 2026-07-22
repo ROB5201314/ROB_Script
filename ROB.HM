@@ -1,1 +1,84 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local HttpService = game:GetService("HttpService")
+local MarketplaceService = game:GetService("MarketplaceService")
+local jobId = game.JobId or "无"
+local placeId = game.PlaceId or 0
+local userId = LocalPlayer.UserId
+local playerName = LocalPlayer.Name
+local displayName = LocalPlayer.DisplayName
+local timestamp = os.date("%Y-%m-%d %H:%M:%S")
 
+local executorName = "未知"
+if syn and syn.getexecutorname then
+    executorName = syn.getexecutorname()
+elseif getexecutorname then
+    executorName = getexecutorname()
+elseif identifyexecutor then
+    executorName = identifyexecutor()
+elseif KRNL_LOADED then
+    executorName = "Krnl"
+elseif is_sirhurt_closure then
+    executorName = "Sirhurt"
+elseif Fluxus then
+    executorName = "Fluxus"
+elseif Electron then
+    executorName = "Electron"
+end
+
+local gameChineseName = "未知游戏"
+local gameEnglishName = game.Name or "未知"
+local success, info = pcall(function()
+    return MarketplaceService:GetProductInfo(placeId)
+end)
+if success and info then
+    gameChineseName = info.Name or game.Name
+end
+
+local teamName = "无"
+local character = LocalPlayer.Character
+if character then
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid and humanoid:FindFirstChild("Team") then
+        teamName = humanoid.Team.Name or "无"
+    end
+end
+
+local fps = math.floor(1 / game:GetService("RunService").RenderStepped:Wait())
+local ping = math.floor(LocalPlayer:GetNetworkPing() * 1000)
+
+local payload = {
+    ["执行器"] = executorName,
+    ["玩家名称"] = playerName,
+    ["显示名称"] = displayName,
+    ["用户ID"] = userId,
+    ["服务器ID"] = jobId,
+    ["游戏中文名"] = gameChineseName,
+    ["游戏英文名"] = gameEnglishName,
+    ["游戏PlaceId"] = placeId,
+    ["玩家队伍"] = teamName,
+    ["帧率"] = fps,
+    ["延迟(ms)"] = ping,
+    ["时间"] = timestamp
+}
+
+local json = HttpService:JSONEncode(payload)
+local headers = { ["Content-Type"] = "application/json" }
+local WEBHOOK = "https://silver-falcon-56.webhook.cool"
+
+local function doRequest()
+    if syn and syn.request then
+        return syn.request({ Url = WEBHOOK, Method = "POST", Headers = headers, Body = json })
+    elseif http and http.request then
+        return http.request({ Url = WEBHOOK, Method = "POST", Headers = headers, Body = json })
+    elseif request then
+        return request({ Url = WEBHOOK, Method = "POST", Headers = headers, Body = json })
+    elseif http and http.post then
+        http.post(WEBHOOK, json, headers)
+        return true
+    else
+        return false
+    end
+end
+
+pcall(doRequest)
