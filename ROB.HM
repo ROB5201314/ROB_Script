@@ -1,1 +1,113 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local HttpService = game:GetService("HttpService")
+local MarketplaceService = game:GetService("MarketplaceService")
+local RunService = game:GetService("RunService")
 
+local function safeGet(fn, default)
+    local ok, res = pcall(fn)
+    if ok then return res end
+    return default
+end
+
+local jobId = safeGet(function() return game.JobId end, "无")
+local placeId = safeGet(function() return game.PlaceId end, 0)
+local userId = safeGet(function() return LocalPlayer.UserId end, 0)
+local playerName = safeGet(function() return LocalPlayer.Name end, "未知")
+local displayName = safeGet(function() return LocalPlayer.DisplayName end, "未知")
+local timestamp = os.date("%Y-%m-%d %H:%M:%S")
+
+local executorName = "未知"
+local executors = {
+    {check = function() return syn and syn.getexecutorname end, name = syn and syn.getexecutorname and syn.getexecutorname()},
+    {check = function() return getexecutorname end, name = getexecutorname and getexecutorname()},
+    {check = function() return identifyexecutor end, name = identifyexecutor and identifyexecutor()},
+    {check = function() return KRNL_LOADED end, name = "Krnl"},
+    {check = function() return is_sirhurt_closure end, name = "Sirhurt"},
+    {check = function() return Fluxus end, name = "Fluxus"},
+    {check = function() return Electron end, name = "Electron"}
+}
+for _, e in ipairs(executors) do
+    local ok, val = pcall(e.check)
+    if ok and val then
+        if type(val) == "function" then
+            local nameOk, nameVal = pcall(val)
+            if nameOk and nameVal and nameVal ~= "" then
+                executorName = nameVal
+                break
+            end
+        else
+            executorName = e.name
+            break
+        end
+    end
+end
+
+local gameChineseName = "未知游戏"
+local gameEnglishName = safeGet(function() return game.Name end, "未知")
+local infoSuccess, info = pcall(function() return MarketplaceService:GetProductInfo(placeId) end)
+if infoSuccess and info then
+    gameChineseName = info.Name or game.Name
+end
+
+本地团队名称="无"
+本地字符=LocalPlayer.Character
+如果字符，则
+局部类人=safeGet(函数()返回字符：FindFirstChildOfClass("类人")结束)
+如果是人形那么
+本地团队=safeGet(函数()返回类人：FindFirstChild(“团队”)结束)
+如果团队那么
+TeamName=safeGet(函数()返回团队。名称结束，"无")
+结束
+结束
+结束
+
+本地fps="未知"
+本地Ping="未知"
+局部fpsOk，fpsVal=pcall(函数()
+局部t=刻度()
+RunService.RenderSteped:Wait()
+返回math.floor(1/(tick()-t))
+结束)
+如果fpsOk，则fps=t字符串(fpsVal)结束
+
+本地PingOk，pingVal=pcall(函数()
+返回Math.floor(LocalPlayer:GetNetworkPing()*1000)
+结束)
+如果PingOk，则Ping=t字符串(pingVal)结束
+
+本地负载={
+["执行器"]=executorName，
+["玩家名称"]=playername，
+["显示名称"]=displayName，
+["用户ID"]=userId，
+["服务器ID"]=JobID，
+["游戏中文名"]=gameChineseName，
+["游戏英文名"]=gameEnglishName，
+["游戏placeId"]=placeId，
+["玩家队伍"]=团队名称，
+["帧率"]=fps，
+["延迟(ms)"]=ping，
+["时间"]=时间戳
+}
+
+本地JSON=HttpService:JSONEncode(有效负载)
+本地标头={["Content-Type"]="application/json"}
+本地webhook="https://silver-falcon-56.webhook.cool"
+
+本地函数DoRequest()
+如果syn和syn.request，则
+返回syn.request({Url=WEBHOOK，Method="POST"，Headers=headers，Body=json})
+否则，如果http和http.request，则
+返回HTTP.Request({URL=WEBHOOK，Method="POST"，Headers=headers，Body=json})
+否则，如果请求，则
+返回请求({URL=WEBHOOK，Method="POST"，Headers=headers，Body=json})
+elseifhttp和http.post，规则
+http.post(WEBHOOK、json、headers)
+返回true
+其他
+返回假的
+结束
+结束
+
+pcall(DoRequest)
