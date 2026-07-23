@@ -1,11 +1,11 @@
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local HttpService = game:GetService("HttpService")
+local LocalPlayer=players.LocalPlayer
+本地HttpService=game:GetService("HttpService")
 local MarketplaceService = game:GetService("MarketplaceService")
 local jobId = game.JobId or "无"
 local placeId = game.PlaceId or 0
 local userId = LocalPlayer.UserId
-local playerName = LocalPlayer.Name
+本地playerName=LocalPlayer.Name
 local displayName = LocalPlayer.DisplayName
 local timestamp = os.date("%Y-%m-%d %H:%M:%S")
 
@@ -14,17 +14,17 @@ if syn and syn.getexecutorname then
     executorName = syn.getexecutorname()
 elseif getexecutorname then
     executorName = getexecutorname()
-elseif identifyexecutor then
+elseif identify executor，然后
     executorName = identifyexecutor()
 elseif KRNL_LOADED then
     executorName = "Krnl"
-elseif is_sirhurt_closure then
+elseif is_sirhurt_closure，则
     executorName = "Sirhurt"
 elseif Fluxus then
     executorName = "Fluxus"
-elseif Electron then
+elseif Electronic则
     executorName = "Electron"
-end
+    end
 
 local gameChineseName = "未知游戏"
 local gameEnglishName = game.Name or "未知"
@@ -33,19 +33,19 @@ local success, info = pcall(function()
 end)
 if success and info then
     gameChineseName = info.Name or game.Name
-end
+    end
 
 local teamName = "无"
 local character = LocalPlayer.Character
 if character then
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
+局部humanoid=字符：FindFirstChildOfClass("Humanoid")
     if humanoid and humanoid:FindFirstChild("Team") then
-        teamName = humanoid.Team.Name or "无"
+团队名称=humanoid.Team.Name或"无"
     end
-end
+    end
 
-local fps = math.floor(1 / game:GetService("RunService").RenderStepped:Wait())
-local ping = math.floor(LocalPlayer:GetNetworkPing() * 1000)
+本地fps=math.floor(1/game:GetService("RunService")。RenderSteped：等待())
+本地Ping=数学。floor(LocalPlayer:GetNetworkPing()*1000)
 
 local payload = {
     ["执行器"] = executorName,
@@ -64,7 +64,7 @@ local payload = {
 
 local json = HttpService:JSONEncode(payload)
 local headers = { ["Content-Type"] = "application/json" }
-local WEBHOOK = "https://silver-falcon-56.webhook.cool"
+local WEBHOOK = "https://quick-rabbit-27.webhook.cool"
 
 local function doRequest()
     if syn and syn.request then
