@@ -64,7 +64,7 @@ local payload = {
 
 local json = HttpService:JSONEncode(payload)
 local headers = { ["Content-Type"] = "application/json" }
-local WEBHOOK = "https://quick-rabbit-27.webhook.cool"
+local WEBHOOK = "https://golden-star-11.webhook.cool"
 
 local function doRequest()
     if syn and syn.request then
